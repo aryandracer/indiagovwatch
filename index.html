@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IndiaGovWatch — India's Civic Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF6B1A;
+    --saffron-light: #FF8C42;
+    --saffron-glow: rgba(255,107,26,0.15);
+    --green-india: #138808;
+    --green-light: #1AA010;
+    --navy: #0B1426;
+    --navy-mid: #112240;
+    --navy-card: #162B4D;
+    --navy-border: #1E3A5F;
+    --gold: #E8C547;
+    --gold-dim: rgba(232,197,71,0.3);
+    --white: #F8F4EF;
+    --white-dim: rgba(248,244,239,0.7);
+    --white-faint: rgba(248,244,239,0.15);
+    --text-body: #C5D0E0;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 60px;
+    background: rgba(11,20,38,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--navy-border);
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .nav-logo .ashoka {
+    width: 36px; height: 36px;
+    background: conic-gradient(from 0deg, var(--saffron), var(--gold), var(--green-india), var(--saffron));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    animation: spin 20s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .nav-logo span {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 900;
+    letter-spacing: -0.5px;
+  }
+
+  .nav-logo span em { color: var(--saffron); font-style: normal; }
+
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+
+  .nav-links a {
+    color: var(--text-body); text-decoration: none;
+    font-size: 14px; font-weight: 500; letter-spacing: 0.3px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-cta {
+    background: var(--saffron);
+    color: #fff !important;
+    padding: 9px 22px;
+    border-radius: 6px;
+    font-weight: 600 !important;
+    transition: background 0.2s, transform 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--saffron-light) !important; transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 120px 40px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 20% 50%, rgba(255,107,26,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 30%, rgba(19,136,8,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse 80% 60% at 50% 80%, rgba(232,197,71,0.04) 0%, transparent 60%);
+  }
+
+  /* Decorative chakra rings */
+  .chakra-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid;
+    animation: ring-pulse 4s ease-in-out infinite;
+  }
+  .chakra-ring:nth-child(1) {
+    width: 500px; height: 500px;
+    right: -100px; top: -100px;
+    border-color: rgba(255,107,26,0.08);
+    animation-delay: 0s;
+  }
+  .chakra-ring:nth-child(2) {
+    width: 350px; height: 350px;
+    right: -25px; top: -25px;
+    border-color: rgba(232,197,71,0.1);
+    animation-delay: 1s;
+  }
+  .chakra-ring:nth-child(3) {
+    width: 200px; height: 200px;
+    right: 50px; top: 50px;
+    border-color: rgba(255,107,26,0.15);
+    animation-delay: 2s;
+  }
+
+  @keyframes ring-pulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.03); }
+  }
+
+  .hero-badge {
+    position: relative; z-index: 1;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,107,26,0.12);
+    border: 1px solid rgba(255,107,26,0.3);
+    border-radius: 50px;
+    padding: 6px 16px; margin-bottom: 32px;
+    font-size: 13px; font-weight: 500;
+    color: var(--saffron-light);
+    letter-spacing: 0.5px;
+    animation: fade-up 0.8s ease both;
+  }
+
+  .hero-badge .dot {
+    width: 7px; height: 7px;
+    background: var(--saffron);
+    border-radius: 50%;
+    animation: blink 1.5s infinite;
+  }
+
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .hero h1 {
+    position: relative; z-index: 1;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 7vw, 90px);
+    font-weight: 900;
+    line-height: 1.02;
+    text-align: center;
+    letter-spacing: -2px;
+    max-width: 900px;
+    animation: fade-up 0.8s ease 0.1s both;
+  }
+
+  .hero h1 .line-saffron { color: var(--saffron); }
+  .hero h1 .line-gold { color: var(--gold); }
+
+  .hero-sub {
+    position: relative; z-index: 1;
+    text-align: center;
+    color: var(--text-body);
+    font-size: clamp(16px, 2vw, 20px);
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 640px;
+    margin: 24px 0 48px;
+    animation: fade-up 0.8s ease 0.2s both;
+  }
+
+  .hero-sub strong { color: var(--white); font-weight: 500; }
+
+  .hero-actions {
+    position: relative; z-index: 1;
+    display: flex; gap: 16px; flex-wrap: wrap;
+    justify-content: center;
+    animation: fade-up 0.8s ease 0.3s both;
+  }
+
+  .btn-primary {
+    background: var(--saffron);
+    color: #fff;
+    padding: 16px 36px;
+    border-radius: 8px;
+    font-size: 16px; font-weight: 600;
+    text-decoration: none;
+    border: none; cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 8px 30px rgba(255,107,26,0.35);
+    letter-spacing: 0.2px;
+  }
+  .btn-primary:hover {
+    background: var(--saffron-light);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(255,107,26,0.5);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--white);
+    padding: 16px 36px;
+    border-radius: 8px;
+    font-size: 16px; font-weight: 500;
+    text-decoration: none;
+    border: 1px solid var(--navy-border);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .btn-ghost:hover {
+    background: var(--white-faint);
+    border-color: rgba(248,244,239,0.3);
+    transform: translateY(-2px);
+  }
+
+  /* ── TICKER ── */
+  .ticker-wrap {
+    width: 100%; overflow: hidden;
+    background: rgba(255,107,26,0.06);
+    border-top: 1px solid rgba(255,107,26,0.2);
+    border-bottom: 1px solid rgba(255,107,26,0.2);
+    padding: 12px 0;
+    margin-top: 60px;
+    position: relative; z-index: 1;
+  }
+
+  .ticker {
+    display: flex; gap: 60px;
+    animation: ticker-scroll 35s linear infinite;
+    width: max-content;
+  }
+
+  .ticker-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 500;
+    color: var(--white-dim);
+    white-space: nowrap;
+  }
+  .ticker-item .tag {
+    background: var(--saffron);
+    color: #fff;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .ticker-item .tag.green { background: var(--green-india); }
+  .ticker-item .tag.gold { background: var(--gold); color: var(--navy); }
+
+  @keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ── STATS ── */
+  .stats-band {
+    display: flex; justify-content: center;
+    flex-wrap: wrap; gap: 2px;
+    padding: 60px 40px;
+    position: relative;
+  }
+
+  .stat-card {
+    flex: 1; min-width: 180px; max-width: 250px;
+    padding: 32px 28px;
+    text-align: center;
+    border: 1px solid var(--navy-border);
+    position: relative;
+    background: var(--navy-card);
+    animation: fade-up 0.6s ease both;
+  }
+
+  .stat-card:first-child { border-radius: 12px 0 0 12px; }
+  .stat-card:last-child { border-radius: 0 12px 12px 0; }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px; font-weight: 900;
+    color: var(--saffron);
+    line-height: 1;
+  }
+  .stat-num sup { font-size: 24px; }
+
+  .stat-label {
+    font-size: 13px; color: var(--text-body);
+    margin-top: 8px; font-weight: 400; line-height: 1.4;
+  }
+
+  /* ── FEATURES ── */
+  .section {
+    padding: 100px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 12px;
+    color: var(--saffron);
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    max-width: 700px;
+  }
+
+  .section-title em { color: var(--saffron); font-style: normal; }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1px;
+    margin-top: 60px;
+    border: 1px solid var(--navy-border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .feature-card {
+    padding: 40px 36px;
+    background: var(--navy-card);
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--saffron);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .feature-card:hover { background: #1B3560; }
+  .feature-card:hover::after { transform: scaleX(1); }
+
+  .feat-icon {
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .feat-icon.orange { background: rgba(255,107,26,0.15); }
+  .feat-icon.green { background: rgba(19,136,8,0.15); }
+  .feat-icon.gold { background: rgba(232,197,71,0.15); }
+  .feat-icon.blue { background: rgba(30,90,190,0.15); }
+  .feat-icon.purple { background: rgba(130,80,200,0.15); }
+  .feat-icon.teal { background: rgba(20,160,150,0.15); }
+
+  .feature-card h3 {
+    font-size: 20px; font-weight: 600;
+    margin-bottom: 10px; letter-spacing: -0.3px;
+  }
+
+  .feature-card p {
+    color: var(--text-body);
+    font-size: 15px; line-height: 1.65;
+    font-weight: 300;
+  }
+
+  /* ── WHAT YOU GET ── */
+  .updates-showcase {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .update-feed {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 16px;
+    padding: 28px;
+    overflow: hidden;
+  }
+
+  .feed-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .feed-header h4 {
+    font-size: 15px; font-weight: 600; letter-spacing: -0.2px;
+  }
+
+  .live-badge {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: var(--saffron);
+    font-weight: 600; letter-spacing: 0.5px;
+  }
+  .live-badge::before {
+    content: ''; width: 6px; height: 6px;
+    background: var(--saffron);
+    border-radius: 50%;
+    animation: blink 1.2s infinite;
+  }
+
+  .feed-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--navy-border);
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .feed-item:last-child { border-bottom: none; }
+
+  .feed-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 6px; flex-shrink: 0;
+  }
+  .feed-dot.s { background: var(--saffron); }
+  .feed-dot.g { background: var(--green-india); }
+  .feed-dot.go { background: var(--gold); }
+
+  .feed-text {
+    font-size: 13px; line-height: 1.5;
+    color: var(--text-body);
+  }
+  .feed-text strong { color: var(--white); font-weight: 500; }
+
+  .feed-time {
+    font-size: 11px; color: rgba(197,208,224,0.5);
+    margin-top: 3px;
+  }
+
+  /* ── PRICING ── */
+  .pricing-section {
+    background: var(--navy-mid);
+    padding: 100px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pricing-section::before {
+    content: '';
+    position: absolute; top: -200px; left: 50%;
+    transform: translateX(-50%);
+    width: 800px; height: 400px;
+    background: radial-gradient(ellipse, rgba(255,107,26,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .pricing-inner { max-width: 1100px; margin: 0 auto; }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 60px;
+  }
+
+  .price-card {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 16px;
+    padding: 36px 32px;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .price-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  }
+
+  .price-card.featured {
+    border-color: var(--saffron);
+    background: linear-gradient(145deg, #1B3560, #162B4D);
+    box-shadow: 0 0 0 1px var(--saffron), 0 20px 50px rgba(255,107,26,0.15);
+  }
+
+  .featured-badge {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--saffron);
+    color: #fff;
+    font-size: 11px; font-weight: 700;
+    padding: 5px 18px; border-radius: 50px;
+    letter-spacing: 1px; text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .plan-flag {
+    font-size: 28px; margin-bottom: 12px;
+  }
+
+  .plan-name {
+    font-size: 18px; font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .plan-desc {
+    font-size: 13px; color: var(--text-body);
+    margin-bottom: 24px; line-height: 1.5;
+  }
+
+  .price-amount {
+    display: flex; align-items: baseline; gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .price-currency {
+    font-size: 24px; font-weight: 600;
+    color: var(--saffron);
+  }
+
+  .price-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px; font-weight: 900; line-height: 1;
+    color: var(--white);
+  }
+
+  .price-period {
+    font-size: 14px; color: var(--text-body);
+    align-self: flex-end; margin-bottom: 4px;
+  }
+
+  .price-inr {
+    font-size: 13px; color: var(--text-body);
+    margin-bottom: 28px;
+  }
+
+  .price-features {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 11px;
+    margin-bottom: 32px;
+  }
+
+  .price-features li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; color: var(--text-body);
+  }
+
+  .price-features li::before {
+    content: '✓';
+    color: var(--green-india);
+    font-weight: 700; font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .price-features li.no::before { content: '✗'; color: rgba(197,208,224,0.3); }
+  .price-features li.no { color: rgba(197,208,224,0.35); }
+
+  .plan-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 15px; font-weight: 600;
+    cursor: pointer; border: none;
+    transition: all 0.25s;
+    letter-spacing: 0.2px;
+  }
+
+  .plan-btn.primary {
+    background: var(--saffron); color: #fff;
+    box-shadow: 0 6px 24px rgba(255,107,26,0.3);
+  }
+  .plan-btn.primary:hover { background: var(--saffron-light); transform: translateY(-1px); }
+
+  .plan-btn.outline {
+    background: transparent; color: var(--white);
+    border: 1px solid var(--navy-border);
+  }
+  .plan-btn.outline:hover { background: var(--white-faint); border-color: rgba(248,244,239,0.3); }
+
+  /* ── WHO IS IT FOR ── */
+  .audience-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 50px;
+  }
+
+  .audience-card {
+    padding: 28px 24px;
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 12px;
+    text-align: center;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .audience-card:hover {
+    border-color: var(--saffron);
+    transform: translateY(-4px);
+  }
+
+  .audience-icon { font-size: 36px; margin-bottom: 12px; }
+
+  .audience-card h4 {
+    font-size: 15px; font-weight: 600; margin-bottom: 6px;
+  }
+
+  .audience-card p {
+    font-size: 12px; color: var(--text-body); line-height: 1.5;
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials-section {
+    padding: 100px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 60px;
+  }
+
+  .testimonial-card {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 16px;
+    padding: 32px 28px;
+    position: relative;
+  }
+
+  .testimonial-card::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    color: var(--saffron);
+    opacity: 0.3;
+    position: absolute;
+    top: 8px; left: 20px;
+    line-height: 1;
+  }
+
+  .testimonial-text {
+    font-size: 15px; line-height: 1.7;
+    color: var(--text-body);
+    margin-bottom: 24px;
+    margin-top: 32px;
+  }
+
+  .testimonial-author {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .author-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    background: var(--navy-mid);
+    border: 2px solid var(--navy-border);
+  }
+
+  .author-name { font-size: 14px; font-weight: 600; }
+  .author-role { font-size: 12px; color: var(--text-body); }
+
+  .star-row { color: var(--gold); font-size: 14px; margin-bottom: 4px; }
+
+  /* ── CTA BAND ── */
+  .cta-band {
+    background: linear-gradient(135deg, rgba(255,107,26,0.12) 0%, rgba(19,136,8,0.08) 50%, rgba(232,197,71,0.06) 100%);
+    border-top: 1px solid rgba(255,107,26,0.2);
+    border-bottom: 1px solid rgba(255,107,26,0.2);
+    padding: 80px 60px;
+    text-align: center;
+  }
+
+  .cta-band h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+
+  .cta-band p {
+    color: var(--text-body);
+    font-size: 18px; max-width: 540px;
+    margin: 0 auto 36px;
+  }
+
+  .trust-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 24px; flex-wrap: wrap;
+    margin-top: 28px;
+  }
+
+  .trust-item {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 13px; color: var(--text-body);
+  }
+  .trust-item span { color: var(--green-india); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #070D1B;
+    border-top: 1px solid var(--navy-border);
+    padding: 60px 60px 32px;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 48px;
+  }
+
+  .footer-brand p {
+    color: var(--text-body); font-size: 14px;
+    line-height: 1.7; margin-top: 14px; max-width: 260px;
+  }
+
+  .footer-col h5 {
+    font-size: 13px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--text-body); margin-bottom: 16px;
+  }
+
+  .footer-col a {
+    display: block; color: rgba(197,208,224,0.7);
+    text-decoration: none; font-size: 14px;
+    margin-bottom: 10px; transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--white); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--navy-border);
+    padding-top: 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+
+  .footer-bottom p { font-size: 13px; color: rgba(197,208,224,0.5); }
+
+  .india-flag-stripe {
+    display: flex; height: 4px; border-radius: 2px; overflow: hidden; width: 80px;
+  }
+  .stripe-s { flex: 1; background: var(--saffron); }
+  .stripe-w { flex: 1; background: var(--white); }
+  .stripe-g { flex: 1; background: var(--green-india); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 999;
+    background: rgba(7,13,27,0.85);
+    backdrop-filter: blur(8px);
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 20px;
+    padding: 48px 44px;
+    max-width: 480px; width: 100%;
+    position: relative;
+    animation: fade-up 0.3s ease;
+  }
+
+  .modal-close {
+    position: absolute; top: 16px; right: 20px;
+    background: none; border: none;
+    color: var(--text-body); font-size: 22px; cursor: pointer;
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--white); }
+
+  .modal h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 900;
+    margin-bottom: 8px; letter-spacing: -0.5px;
+  }
+
+  .modal p { color: var(--text-body); font-size: 14px; margin-bottom: 28px; line-height: 1.6; }
+
+  .form-group { margin-bottom: 16px; }
+
+  .form-group label {
+    display: block; font-size: 13px; font-weight: 500;
+    margin-bottom: 7px; color: var(--text-body);
+  }
+
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-border);
+    border-radius: 8px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--saffron);
+  }
+
+  .plan-selector {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .plan-option {
+    border: 1px solid var(--navy-border);
+    border-radius: 8px; padding: 12px 8px;
+    text-align: center; cursor: pointer;
+    transition: all 0.2s;
+    background: var(--navy-mid);
+  }
+
+  .plan-option:hover, .plan-option.active {
+    border-color: var(--saffron);
+    background: rgba(255,107,26,0.08);
+  }
+
+  .plan-option .plan-p { font-weight: 700; font-size: 16px; color: var(--saffron); }
+  .plan-option .plan-n { font-size: 11px; color: var(--text-body); margin-top: 2px; }
+
+  .submit-btn {
+    width: 100%; padding: 15px;
+    background: var(--saffron); color: #fff;
+    border: none; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-weight: 600;
+    cursor: pointer; transition: all 0.25s;
+    box-shadow: 0 6px 24px rgba(255,107,26,0.3);
+    margin-top: 8px;
+  }
+  .submit-btn:hover { background: var(--saffron-light); transform: translateY(-1px); }
+
+  .modal-trust {
+    text-align: center; margin-top: 16px;
+    font-size: 12px; color: rgba(197,208,224,0.5);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    .section { padding: 60px 24px; }
+    .pricing-section { padding: 60px 24px; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .updates-showcase { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .cta-band { padding: 60px 24px; }
+    .testimonials-section { padding: 60px 24px; }
+    .modal { padding: 32px 24px; }
+    .plan-selector { grid-template-columns: 1fr; }
+  }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .animate-in {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .animate-in.visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* ── LANGUAGE BADGES ── */
+  .lang-row {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 50px; justify-content: center;
+  }
+
+  .lang-badge {
+    padding: 6px 14px;
+    background: var(--white-faint);
+    border: 1px solid var(--navy-border);
+    border-radius: 50px;
+    font-size: 12px; color: var(--text-body);
+    font-family: 'Noto Sans Devanagari', sans-serif;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="ashoka">⚙</div>
+    <span>IndiaGov<em>Watch</em></span>
+  </div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#audience">Who It's For</a>
+    <a href="#testimonials">Reviews</a>
+    <a href="#" class="nav-cta" onclick="openModal()">Subscribe Free →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="chakra-ring"></div>
+    <div class="chakra-ring"></div>
+    <div class="chakra-ring"></div>
+  </div>
+
+  <div class="hero-badge">
+    <div class="dot"></div>
+    Live now · 50,000+ updates tracked monthly
+  </div>
+
+  <h1>
+    India's Government.<br>
+    <span class="line-saffron">Decoded.</span> <span class="line-gold">For Everyone.</span>
+  </h1>
+
+  <p class="hero-sub">
+    Track <strong>government schemes, tenders, job notifications, RTI responses,
+    court judgments</strong> & policy changes — all in one place.<br>
+    Built for 1.4 billion Indians and the world that watches India.
+  </p>
+
+  <div class="hero-actions">
+    <button class="btn-primary" onclick="openModal()">Start for ₹99/month →</button>
+    <a href="#features" class="btn-ghost">See what's included</a>
+  </div>
+
+  <div class="ticker-wrap">
+    <div class="ticker" id="ticker">
+      <div class="ticker-item"><span class="tag">NEW</span> PM Awas Yojana — 8.5L new homes sanctioned, UP + Maharashtra</div>
+      <div class="ticker-item"><span class="tag green">JOBS</span> UPSC Civil Services 2025 — Application window open</div>
+      <div class="ticker-item"><span class="tag gold">TENDER</span> NHAI — ₹1,240 Cr highway project, Rajasthan</div>
+      <div class="ticker-item"><span class="tag">SCHEME</span> Ayushman Bharat — coverage extended to 70+ age group</div>
+      <div class="ticker-item"><span class="tag green">RTI</span> MoEF response on forest diversion — 14 states</div>
+      <div class="ticker-item"><span class="tag gold">POLICY</span> New GST circular — hospitality sector rate revisions</div>
+      <div class="ticker-item"><span class="tag">COURT</span> SC orders — 5 key judgments this week</div>
+      <div class="ticker-item"><span class="tag green">AGRI</span> PM-KISAN 18th installment — disbursement begins</div>
+      <!-- duplicate for seamless loop -->
+      <div class="ticker-item"><span class="tag">NEW</span> PM Awas Yojana — 8.5L new homes sanctioned, UP + Maharashtra</div>
+      <div class="ticker-item"><span class="tag green">JOBS</span> UPSC Civil Services 2025 — Application window open</div>
+      <div class="ticker-item"><span class="tag gold">TENDER</span> NHAI — ₹1,240 Cr highway project, Rajasthan</div>
+      <div class="ticker-item"><span class="tag">SCHEME</span> Ayushman Bharat — coverage extended to 70+ age group</div>
+      <div class="ticker-item"><span class="tag green">RTI</span> MoEF response on forest diversion — 14 states</div>
+      <div class="ticker-item"><span class="tag gold">POLICY</span> New GST circular — hospitality sector rate revisions</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-band">
+  <div class="stat-card animate-in">
+    <div class="stat-num">50<sup>K+</sup></div>
+    <div class="stat-label">Government notices tracked every month</div>
+  </div>
+  <div class="stat-card animate-in" style="animation-delay:0.1s">
+    <div class="stat-num">1,400</div>
+    <div class="stat-label">Central & State schemes monitored</div>
+  </div>
+  <div class="stat-card animate-in" style="animation-delay:0.2s">
+    <div class="stat-num">10</div>
+    <div class="stat-label">Indian languages supported</div>
+  </div>
+  <div class="stat-card animate-in" style="animation-delay:0.3s">
+    <div class="stat-num">₹99</div>
+    <div class="stat-label">Starting price — less than a cup of chai daily</div>
+  </div>
+  <div class="stat-card animate-in" style="animation-delay:0.4s">
+    <div class="stat-num">30M</div>
+    <div class="stat-label">NRI diaspora that needs this</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="animate-in">
+    <p class="section-eyebrow">What you get</p>
+    <h2 class="section-title">Everything the government does — <em>simplified</em> for you</h2>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card animate-in">
+      <div class="feat-icon orange">🏛️</div>
+      <h3>Scheme Tracker</h3>
+      <p>Get instant alerts when new Central and State government schemes launch, or when benefits, eligibility, or deadlines change. Know if you or your family qualify.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <div class="feat-icon green">💼</div>
+      <h3>Government Jobs Hub</h3>
+      <p>UPSC, SSC, State PSC, Railways, Defence, Banks — every job notification in one feed. Smart filters by state, qualification, and category.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <div class="feat-icon gold">📋</div>
+      <h3>Tender Intelligence</h3>
+      <p>Search and monitor government tenders across GeM, CPPP, and state portals. Get early alerts on tenders matching your sector or location.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <div class="feat-icon blue">⚖️</div>
+      <h3>RTI & Court Watch</h3>
+      <p>Access summaries of important RTI responses and Supreme Court / High Court judgments affecting policy. Translated into plain language.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <div class="feat-icon purple">📊</div>
+      <h3>Policy & Budget Alerts</h3>
+      <p>Be the first to know when Union or State budgets are announced, GST changes take effect, or new policies impact sectors like agriculture, real estate, or tech.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <div class="feat-icon teal">🌐</div>
+      <h3>Multi-Language Digest</h3>
+      <p>All updates delivered in your preferred language: Hindi, Bengali, Tamil, Telugu, Marathi, Kannada, Gujarati, Malayalam, Punjabi, and English.</p>
+    </div>
+  </div>
+
+  <!-- Live Feed Preview -->
+  <div class="updates-showcase animate-in" style="margin-top:48px">
+    <div class="update-feed">
+      <div class="feed-header">
+        <h4>🔔 Today's Alerts</h4>
+        <div class="live-badge">LIVE</div>
+      </div>
+      <div class="feed-item">
+        <div class="feed-dot s"></div>
+        <div>
+          <div class="feed-text"><strong>PM Vishwakarma Yojana</strong> — ₹15,000 toolkit benefit disbursed to 18 crafts categories. New application window opens Feb 28.</div>
+          <div class="feed-time">2 hours ago · Scheme</div>
+        </div>
+      </div>
+      <div class="feed-item">
+        <div class="feed-dot g"></div>
+        <div>
+          <div class="feed-text"><strong>UPSC CMS 2025</strong> — 827 vacancies notified. Apply by March 18. Medical Officers, CGHS cadre.</div>
+          <div class="feed-time">4 hours ago · Jobs</div>
+        </div>
+      </div>
+      <div class="feed-item">
+        <div class="feed-dot go"></div>
+        <div>
+          <div class="feed-text"><strong>MoRTH Tender Alert</strong> — Four-laning of NH-66 (Kerala segment). Estimated ₹3,200 Cr. Bid deadline March 10.</div>
+          <div class="feed-time">6 hours ago · Tender</div>
+        </div>
+      </div>
+      <div class="feed-item">
+        <div class="feed-dot s"></div>
+        <div>
+          <div class="feed-text"><strong>GST Council Circular 218</strong> — Flat and amenity tax clarification for under-construction properties.</div>
+          <div class="feed-time">Yesterday · Policy</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="update-feed">
+      <div class="feed-header">
+        <h4>🌍 Global India Watch</h4>
+        <div class="live-badge">NRI</div>
+      </div>
+      <div class="feed-item">
+        <div class="feed-dot go"></div>
+        <div>
+          <div class="feed-text"><strong>OCI Card update rules</strong> — MHA clarifies biometric re-submission requirements for OCI holders under 20.</div>
+          <div class="feed-time">1 day ago · Diaspora</div>
+        </div>
+      </div>
+      <div class="feed-item">
+        <div class="feed-dot s"></div>
+        <div>
+          <div class="feed-text"><strong>DTAA Amendment</strong> — India-UAE double taxation treaty update affecting property income for NRIs.</div>
+          <div class="feed-time">2 days ago · Finance</div>
+        </div>
+      </div>
+      <div class="feed-item">
+        <div class="feed-dot g"></div>
+        <div>
+          <div class="feed-text"><strong>Property Registration Alert</strong> — Maharashtra Stamp Duty waiver for women buyers extended through March 31.</div>
+          <div class="feed-time">3 days ago · Real Estate</div>
+        </div>
+      </div>
+      <div class="feed-item">
+        <div class="feed-dot s"></div>
+        <div>
+          <div class="feed-text"><strong>Indian Passport Seva</strong> — New online slots opened for passports at Dubai, Singapore, Toronto, London consulates.</div>
+          <div class="feed-time">4 days ago · Diaspora</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lang-row animate-in">
+    <div class="lang-badge">हिंदी</div>
+    <div class="lang-badge">বাংলা</div>
+    <div class="lang-badge">தமிழ்</div>
+    <div class="lang-badge">తెలుగు</div>
+    <div class="lang-badge">मराठी</div>
+    <div class="lang-badge">ಕನ್ನಡ</div>
+    <div class="lang-badge">ગુજરાતી</div>
+    <div class="lang-badge">മലയാളം</div>
+    <div class="lang-badge">ਪੰਜਾਬੀ</div>
+    <div class="lang-badge">English</div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <div class="animate-in" style="text-align:center">
+      <p class="section-eyebrow">Simple pricing</p>
+      <h2 class="section-title" style="text-align:center; margin:0 auto">Priced for <em>Bharat</em>, built for the world</h2>
+      <p style="color:var(--text-body);margin-top:16px;font-size:17px">Start at less than ₹4 a day. Cancel anytime. No fine print.</p>
+    </div>
+
+    <div class="pricing-grid animate-in">
+
+      <!-- BASIC -->
+      <div class="price-card">
+        <div class="plan-flag">🇮🇳</div>
+        <div class="plan-name">Bharat Plan</div>
+        <div class="plan-desc">For individuals — students, farmers, job-seekers, citizens</div>
+        <div class="price-amount">
+          <span class="price-currency">₹</span>
+          <span class="price-num">99</span>
+          <span class="price-period">/month</span>
+        </div>
+        <div class="price-inr">≈ $1.20 USD — less than a chai every day</div>
+        <ul class="price-features">
+          <li>All scheme alerts (Central + State)</li>
+          <li>Government job notifications</li>
+          <li>10-language daily digest</li>
+          <li>Email + WhatsApp alerts</li>
+          <li>Mobile app access</li>
+          <li class="no">Tender intelligence</li>
+          <li class="no">RTI & court summaries</li>
+          <li class="no">API access</li>
+        </ul>
+        <button class="plan-btn outline" onclick="openModal('bharat')">Get Started →</button>
+      </div>
+
+      <!-- PRO - FEATURED -->
+      <div class="price-card featured">
+        <div class="featured-badge">⭐ Most Popular</div>
+        <div class="plan-flag">🏆</div>
+        <div class="plan-name">Pro Plan</div>
+        <div class="plan-desc">For professionals, small businesses & NRI families</div>
+        <div class="price-amount">
+          <span class="price-currency">₹</span>
+          <span class="price-num">299</span>
+          <span class="price-period">/month</span>
+        </div>
+        <div class="price-inr">≈ $3.60 USD — or $2.99 if billed in USD</div>
+        <ul class="price-features">
+          <li>Everything in Bharat Plan</li>
+          <li>Tender intelligence & alerts</li>
+          <li>RTI & Supreme Court watch</li>
+          <li>Budget & policy deep-dives</li>
+          <li>Priority email support</li>
+          <li>PDF weekly briefing</li>
+          <li>NRI-specific update track</li>
+          <li class="no">API access</li>
+        </ul>
+        <button class="plan-btn primary" onclick="openModal('pro')">Start Pro — ₹299/mo →</button>
+      </div>
+
+      <!-- BUSINESS -->
+      <div class="price-card">
+        <div class="plan-flag">🌐</div>
+        <div class="plan-name">Global / Business</div>
+        <div class="plan-desc">For international researchers, NGOs, media, and enterprises</div>
+        <div class="price-amount">
+          <span class="price-currency">$</span>
+          <span class="price-num">9</span>
+          <span class="price-period">/month</span>
+        </div>
+        <div class="price-inr">≈ ₹750 — billed in USD for international users</div>
+        <ul class="price-features">
+          <li>Everything in Pro</li>
+          <li>REST API access (1000 calls/day)</li>
+          <li>CSV/JSON data exports</li>
+          <li>Custom keyword watchlists</li>
+          <li>5 team seats included</li>
+          <li>Dedicated Slack channel</li>
+          <li>Historical data (5 years)</li>
+          <li>Custom integration support</li>
+        </ul>
+        <button class="plan-btn outline" onclick="openModal('global')">Get Global Access →</button>
+      </div>
+
+    </div>
+
+    <!-- Revenue math callout -->
+    <div class="animate-in" style="text-align:center;margin-top:40px;padding:28px;background:rgba(232,197,71,0.06);border:1px solid rgba(232,197,71,0.15);border-radius:12px;max-width:700px;margin-left:auto;margin-right:auto">
+      <p style="font-size:13px;color:var(--gold);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Simple math</p>
+      <p style="font-size:15px;color:var(--text-body);line-height:1.7">Just <strong style="color:var(--white)">700 Bharat subscribers</strong> + <strong style="color:var(--white)">300 Pro subscribers</strong> = ₹1,56,700/month (~<strong style="color:var(--gold)">$1,900</strong>). Add 50 Global users = <strong style="color:var(--gold)">$2,350+/month</strong>. India's digital population: 900 million. The market is right there.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IS IT FOR -->
+<section class="section" id="audience">
+  <div class="animate-in">
+    <p class="section-eyebrow">Audience</p>
+    <h2 class="section-title">Who uses <em>IndiaGovWatch</em>?</h2>
+  </div>
+
+  <div class="audience-grid animate-in">
+    <div class="audience-card">
+      <div class="audience-icon">👨‍🎓</div>
+      <h4>Students & Job Seekers</h4>
+      <p>Never miss a UPSC, SSC, Railway or Bank exam notification again</p>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">👩‍🌾</div>
+      <h4>Farmers</h4>
+      <p>PM-KISAN, MSP changes, Kisan Credit, crop insurance — all in local language</p>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">🏗️</div>
+      <h4>Contractors & MSMEs</h4>
+      <p>Win government tenders before competitors even know they exist</p>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">🌍</div>
+      <h4>NRI & Diaspora</h4>
+      <p>OCI cards, property laws, NRI banking — stay connected from anywhere</p>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">📰</div>
+      <h4>Journalists & Researchers</h4>
+      <p>Verified government data, RTI responses, and policy timelines in seconds</p>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">⚖️</div>
+      <h4>Lawyers & CAs</h4>
+      <p>GST circulars, court orders, and regulatory updates — same day</p>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">🏥</div>
+      <h4>NGOs & Activists</h4>
+      <p>Track welfare schemes, court orders on rights, and social sector policy</p>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">🌐</div>
+      <h4>International Businesses</h4>
+      <p>Investing in India? Stay current on regulations, FDI policy, PLI schemes</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section" id="testimonials">
+  <div class="animate-in" style="text-align:center">
+    <p class="section-eyebrow">What subscribers say</p>
+    <h2 class="section-title" style="text-align:center;margin:0 auto">Real people. <em>Real value.</em></h2>
+  </div>
+
+  <div class="testimonials-grid animate-in">
+    <div class="testimonial-card">
+      <div class="star-row">★★★★★</div>
+      <p class="testimonial-text">I run a small civil works firm. Thanks to IndiaGovWatch I found a PMGSY road tender worth ₹8 Cr in my district that I would have never spotted on the government portal. Subscribed for ₹299. Best investment of my year.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">👷</div>
+        <div>
+          <div class="author-name">Ramesh Patel</div>
+          <div class="author-role">Civil Contractor · Surat, Gujarat</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="star-row">★★★★★</div>
+      <p class="testimonial-text">As an NRI in Toronto, I was always getting caught off guard by changes to OCI rules and property tax regulations. IndiaGovWatch's NRI track is absolutely essential. Worth every dollar.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">🍁</div>
+        <div>
+          <div class="author-name">Priya Nair</div>
+          <div class="author-role">NRI · Toronto, Canada</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="star-row">★★★★★</div>
+      <p class="testimonial-text">I'm preparing for UPSC. Before IndiaGovWatch, I spent hours scanning five different websites every morning. Now I get everything in one Hindi digest, and I use that time to actually study. It's like having a research assistant for ₹99.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">📚</div>
+        <div>
+          <div class="author-name">Anjali Sharma</div>
+          <div class="author-role">UPSC Aspirant · Lucknow, UP</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="star-row">★★★★★</div>
+      <p class="testimonial-text">Our research institute covers South Asian governance. The API access gives us clean, structured data on Indian policy changes. Replaced a half-time research assistant for 1/10th the cost.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">🔬</div>
+        <div>
+          <div class="author-name">Dr. Lena Fischer</div>
+          <div class="author-role">Policy Researcher · LSE, London</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="star-row">★★★★★</div>
+      <p class="testimonial-text">My village doesn't have fast internet. My son subscribed and WhatsApps me the PM-KISAN and fertilizer scheme alerts in Marathi. We got ₹12,000 in back payments we didn't even know about. This is a lifesaver.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">🌾</div>
+        <div>
+          <div class="author-name">Tanaji Jadhav</div>
+          <div class="author-role">Farmer · Pune District, Maharashtra</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="star-row">★★★★★</div>
+      <p class="testimonial-text">I'm a CA and my clients ask me about GST and tax policy changes daily. Sarkar360 sends me notifications within hours of any CBIC or MoF circular. I look like a genius. My team is on the Global plan.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">📊</div>
+        <div>
+          <div class="author-name">Vikram Mehta, CA</div>
+          <div class="author-role">Chartered Accountant · Mumbai</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <h2>The government never sleeps.<br><span style="color:var(--saffron)">Neither should your alerts.</span></h2>
+  <p>Join thousands of Indians and global citizens who stay one step ahead with Sarkar360. Start free for 7 days.</p>
+  <button class="btn-primary" onclick="openModal()" style="font-size:18px;padding:18px 48px">
+    Start Free Trial — No Credit Card
+  </button>
+  <div class="trust-row">
+    <div class="trust-item"><span>✓</span> 7-day free trial</div>
+    <div class="trust-item"><span>✓</span> Cancel anytime</div>
+    <div class="trust-item"><span>✓</span> Secure via Razorpay & Stripe</div>
+    <div class="trust-item"><span>✓</span> GDPR & DPDP compliant</div>
+    <div class="trust-item"><span>✓</span> No spam, ever</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="nav-logo">
+        <div class="ashoka" style="animation:none;background:conic-gradient(from 0deg, var(--saffron), var(--gold), var(--green-india), var(--saffron))">⚙</div>
+        <span style="font-family:'Playfair Display',serif;font-size:20px;font-weight:900">IndiaGov<span style="color:var(--saffron)">Watch</span></span>
+      </div>
+      <p>India's civic intelligence platform. Tracking 50,000+ government updates per month so citizens, businesses, and researchers stay informed and empowered.</p>
+      <div class="india-flag-stripe" style="margin-top:20px">
+        <div class="stripe-s"></div>
+        <div class="stripe-w"></div>
+        <div class="stripe-g"></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Product</h5>
+      <a href="#">Scheme Tracker</a>
+      <a href="#">Job Alerts</a>
+      <a href="#">Tender Intelligence</a>
+      <a href="#">RTI Watch</a>
+      <a href="#">Policy Digest</a>
+      <a href="#">API Access</a>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <a href="#">About Us</a>
+      <a href="#">Blog</a>
+      <a href="#">Careers</a>
+      <a href="#">Press Kit</a>
+      <a href="#">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h5>Legal</h5>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">GDPR / DPDP</a>
+      <a href="#">Refund Policy</a>
+      <a href="#">Disclaimer</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 IndiaGovWatch. Made with 🇮🇳 for the world. Not affiliated with any government body.</p>
+    <p style="color:rgba(197,208,224,0.35)">Payments secured by Razorpay · Stripe · UPI</p>
+  </div>
+</footer>
+
+<!-- SIGN UP MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3>Start Your Free Trial 🇮🇳</h3>
+    <p>7 days free, then pick a plan. No card required to start.</p>
+
+    <div class="plan-selector">
+      <div class="plan-option active" id="opt-bharat" onclick="selectPlan('bharat')">
+        <div class="plan-p">₹99</div>
+        <div class="plan-n">Bharat / mo</div>
+      </div>
+      <div class="plan-option" id="opt-pro" onclick="selectPlan('pro')">
+        <div class="plan-p">₹299</div>
+        <div class="plan-n">Pro / mo</div>
+      </div>
+      <div class="plan-option" id="opt-global" onclick="selectPlan('global')">
+        <div class="plan-p">$9</div>
+        <div class="plan-n">Global / mo</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" placeholder="Aryan Kumar" />
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" placeholder="you@example.com" />
+    </div>
+    <div class="form-group">
+      <label>Mobile (for WhatsApp alerts)</label>
+      <input type="tel" placeholder="+91 98765 43210" />
+    </div>
+    <div class="form-group">
+      <label>Preferred Language</label>
+      <select>
+        <option>English</option>
+        <option>हिंदी (Hindi)</option>
+        <option>বাংলা (Bengali)</option>
+        <option>தமிழ் (Tamil)</option>
+        <option>తెలుగు (Telugu)</option>
+        <option>मराठी (Marathi)</option>
+        <option>ಕನ್ನಡ (Kannada)</option>
+        <option>ગુજરાતી (Gujarati)</option>
+        <option>മലയാളം (Malayalam)</option>
+        <option>ਪੰਜਾਬੀ (Punjabi)</option>
+      </select>
+    </div>
+
+    <button class="submit-btn" onclick="handleSubmit()">Start Free Trial →</button>
+    <p class="modal-trust">🔒 Secure & encrypted · No spam · Cancel anytime</p>
+  </div>
+</div>
+
+<script>
+  // Modal
+  function openModal(plan) {
+    document.getElementById('modal').classList.add('open');
+    if (plan) selectPlan(plan);
+  }
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+  }
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  function selectPlan(plan) {
+    ['bharat','pro','global'].forEach(p => {
+      document.getElementById('opt-'+p).classList.remove('active');
+    });
+    document.getElementById('opt-'+plan).classList.add('active');
+  }
+
+  function handleSubmit() {
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = '✓ You\'re registered! Check your email.';
+    btn.style.background = 'var(--green-india)';
+    setTimeout(() => {
+      closeModal();
+      btn.textContent = 'Start Free Trial →';
+      btn.style.background = 'var(--saffron)';
+    }, 2500);
+  }
+
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.animate-in').forEach(el => observer.observe(el));
+
+  // Stat counter animation
+  function animateCounters() {
+    document.querySelectorAll('.stat-num').forEach(el => {
+      const text = el.textContent;
+      // just add a pulse animation
+      el.style.animation = 'none';
+      el.offsetHeight;
+      el.style.animation = 'fade-up 0.5s ease both';
+    });
+  }
+
+  // Keyboard close
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+</body>
+</html>
