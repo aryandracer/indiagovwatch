@@ -1,0 +1,31 @@
+{
+  "name": "indiagovwatch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aryandracer/indiagovwatch.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/aryandracer/indiagovwatch/issues"
+  },
+  "homepage": "https://github.com/aryandracer/indiagovwatch#readme",
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "cashfree-pg": "^5.1.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "nodemailer": "^8.0.1",
+    "razorpay": "^2.9.6",
+    "uuid": "^13.0.0"
+  }
+}

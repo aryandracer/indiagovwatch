@@ -1474,35 +1474,187 @@
   </div>
 </div>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  // Modal
+  // State management
+  let currentPlan = 'bharat';
+  let currentUserId = null;
+
+  // Modal functions
   function openModal(plan) {
     document.getElementById('modal').classList.add('open');
     if (plan) selectPlan(plan);
   }
+
   function closeModal() {
     document.getElementById('modal').classList.remove('open');
+    resetForm();
   }
+
   document.getElementById('modal').addEventListener('click', function(e) {
     if (e.target === this) closeModal();
   });
 
   function selectPlan(plan) {
+    currentPlan = plan;
     ['bharat','pro','global'].forEach(p => {
       document.getElementById('opt-'+p).classList.remove('active');
     });
     document.getElementById('opt-'+plan).classList.add('active');
   }
 
-  function handleSubmit() {
+  function resetForm() {
     const btn = document.querySelector('.submit-btn');
-    btn.textContent = '✓ You\'re registered! Check your email.';
+    btn.textContent = 'Start Free Trial →';
+    btn.style.background = 'var(--saffron)';
+    btn.disabled = false;
+  }
+
+  function showError(message) {
+    alert(message);
+  }
+
+  function showSuccess(message) {
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = message;
     btn.style.background = 'var(--green-india)';
-    setTimeout(() => {
-      closeModal();
-      btn.textContent = 'Start Free Trial →';
-      btn.style.background = 'var(--saffron)';
-    }, 2500);
+  }
+
+  // Registration and payment flow
+  async function handleSubmit() {
+    const btn = document.querySelector('.submit-btn');
+    const name = document.querySelector('input[type="text"]').value.trim();
+    const email = document.querySelector('input[type="email"]').value.trim();
+    const mobile = document.querySelector('input[type="tel"]').value.trim();
+    const language = document.querySelector('select').value;
+
+    // Basic validation
+    if (!name || !email || !mobile) {
+      showError('Please fill in all required fields');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Registering...';
+
+    try {
+      // Step 1: Register user
+      const registerResponse = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, mobile, language, plan: currentPlan })
+      });
+
+      const registerData = await registerResponse.json();
+
+      if (!registerResponse.ok) {
+        if (registerResponse.status === 409) {
+          // User exists, use existing userId
+          currentUserId = registerData.userId;
+          showSuccess('✓ Welcome back! Proceeding to payment...');
+        } else {
+          throw new Error(registerData.message || registerData.errors?.join(', ') || 'Registration failed');
+        }
+      } else {
+        currentUserId = registerData.data.userId;
+        showSuccess('✓ Registered! Your 7-day trial has started!');
+      }
+
+      // Wait a moment to show success message
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Step 2: Create payment order (optional - user can skip during trial)
+      btn.textContent = 'Setting up payment...';
+
+      const orderResponse = await fetch('/api/payments/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: currentUserId, plan: currentPlan })
+      });
+
+      const orderData = await orderResponse.json();
+
+      if (!orderResponse.ok) {
+        // If payment setup fails, still show success for registration
+        showSuccess('✓ Trial started! Check your email.');
+        setTimeout(() => {
+          closeModal();
+          resetForm();
+        }, 2000);
+        return;
+      }
+
+      // Step 3: Open Razorpay checkout
+      const options = {
+        key: orderData.data.keyId,
+        amount: orderData.data.amount,
+        currency: orderData.data.currency,
+        name: 'IndiaGovWatch',
+        description: orderData.data.planName + ' - Monthly Subscription',
+        order_id: orderData.data.orderId,
+        prefill: {
+          name: orderData.data.userName,
+          email: orderData.data.userEmail
+        },
+        theme: {
+          color: '#FF6B1A'
+        },
+        handler: async function(response) {
+          // Verify payment
+          try {
+            const verifyResponse = await fetch('/api/payments/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              })
+            });
+
+            const verifyData = await verifyResponse.json();
+
+            if (verifyData.success) {
+              showSuccess('✓ Payment successful! Subscription active.');
+              setTimeout(() => {
+                closeModal();
+                resetForm();
+              }, 2500);
+            } else {
+              showError('Payment verification failed. Please contact support.');
+              resetForm();
+            }
+          } catch (error) {
+            showError('Payment verification error. Please contact support.');
+            resetForm();
+          }
+        },
+        modal: {
+          ondismiss: function() {
+            // User closed payment modal - trial is still active
+            showSuccess('✓ Trial active! Pay anytime within 7 days.');
+            setTimeout(() => {
+              closeModal();
+              resetForm();
+            }, 2000);
+          }
+        }
+      };
+
+      const razorpay = new Razorpay(options);
+      razorpay.on('payment.failed', function(response) {
+        showError('Payment failed: ' + response.error.description);
+        resetForm();
+      });
+
+      btn.textContent = 'Opening payment...';
+      razorpay.open();
+
+    } catch (error) {
+      console.error('Error:', error);
+      showError(error.message || 'Something went wrong. Please try again.');
+      resetForm();
+    }
   }
 
   // Scroll animations
@@ -1520,7 +1672,6 @@
   function animateCounters() {
     document.querySelectorAll('.stat-num').forEach(el => {
       const text = el.textContent;
-      // just add a pulse animation
       el.style.animation = 'none';
       el.offsetHeight;
       el.style.animation = 'fade-up 0.5s ease both';
