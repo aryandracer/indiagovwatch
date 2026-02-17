@@ -86,9 +86,10 @@ module.exports = async function handler(req, res) {
 
   } catch (error) {
     console.error('Create order error:', error);
+    const errorMessage = error.error?.description || error.message || JSON.stringify(error);
     return res.status(500).json({
       success: false,
-      error: error.message || 'Failed to create order. Please try again.'
+      error: errorMessage
     });
   }
 };
