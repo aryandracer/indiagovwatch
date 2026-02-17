@@ -1423,8 +1423,8 @@
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
-    <h3>Start Your Free Trial 🇮🇳</h3>
-    <p>7 days free, then pick a plan. No card required to start.</p>
+    <h3>Subscribe to IndiaGovWatch 🇮🇳</h3>
+    <p>Enter your details to complete your subscription. Secure payment via Razorpay.</p>
 
     <div class="plan-selector">
       <div class="plan-option active" id="opt-bharat" onclick="selectPlan('bharat')">
@@ -1442,35 +1442,20 @@
     </div>
 
     <div class="form-group">
-      <label>Full Name</label>
-      <input type="text" placeholder="Aryan Kumar" />
+      <label for="subscribe-name">Full Name</label>
+      <input type="text" id="subscribe-name" placeholder="Aryan Kumar" required />
     </div>
     <div class="form-group">
-      <label>Email Address</label>
-      <input type="email" placeholder="you@example.com" />
+      <label for="subscribe-email">Email Address</label>
+      <input type="email" id="subscribe-email" placeholder="you@example.com" required />
     </div>
     <div class="form-group">
-      <label>Mobile (for WhatsApp alerts)</label>
-      <input type="tel" placeholder="+91 98765 43210" />
-    </div>
-    <div class="form-group">
-      <label>Preferred Language</label>
-      <select>
-        <option>English</option>
-        <option>हिंदी (Hindi)</option>
-        <option>বাংলা (Bengali)</option>
-        <option>தமிழ் (Tamil)</option>
-        <option>తెలుగు (Telugu)</option>
-        <option>मराठी (Marathi)</option>
-        <option>ಕನ್ನಡ (Kannada)</option>
-        <option>ગુજરાતી (Gujarati)</option>
-        <option>മലയാളം (Malayalam)</option>
-        <option>ਪੰਜਾਬੀ (Punjabi)</option>
-      </select>
+      <label for="subscribe-phone">Phone Number</label>
+      <input type="tel" id="subscribe-phone" placeholder="+91 98765 43210" required />
     </div>
 
-    <button class="submit-btn" onclick="handleSubmit()">Start Free Trial →</button>
-    <p class="modal-trust">🔒 Secure & encrypted · No spam · Cancel anytime</p>
+    <button class="submit-btn" onclick="handleSubmit()">Subscribe ₹99/month →</button>
+    <p class="modal-trust">🔒 Secure payment via Razorpay · Cancel anytime</p>
   </div>
 </div>
 
@@ -1478,12 +1463,22 @@
 <script>
   // State management
   let currentPlan = 'bharat';
-  let currentUserId = null;
+
+  // Plan prices for display
+  const planPrices = {
+    bharat: { amount: 9900, currency: 'INR', display: '₹99' },
+    pro: { amount: 29900, currency: 'INR', display: '₹299' },
+    global: { amount: 900, currency: 'USD', display: '$9' }
+  };
 
   // Modal functions
   function openModal(plan) {
     document.getElementById('modal').classList.add('open');
     if (plan) selectPlan(plan);
+    // Clear previous form data
+    document.getElementById('subscribe-name').value = '';
+    document.getElementById('subscribe-email').value = '';
+    document.getElementById('subscribe-phone').value = '';
   }
 
   function closeModal() {
@@ -1501,11 +1496,15 @@
       document.getElementById('opt-'+p).classList.remove('active');
     });
     document.getElementById('opt-'+plan).classList.add('active');
+
+    // Update button text with plan price
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = `Subscribe ${planPrices[plan].display}/month →`;
   }
 
   function resetForm() {
     const btn = document.querySelector('.submit-btn');
-    btn.textContent = 'Start Free Trial →';
+    btn.textContent = `Subscribe ${planPrices[currentPlan].display}/month →`;
     btn.style.background = 'var(--saffron)';
     btn.disabled = false;
   }
@@ -1520,130 +1519,133 @@
     btn.style.background = 'var(--green-india)';
   }
 
-  // Registration and payment flow
+  // Validate email format
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  // Validate phone format (basic validation)
+  function isValidPhone(phone) {
+    return /^[\d\s\+\-\(\)]{10,}$/.test(phone);
+  }
+
+  // Payment flow: Submit form → Create Order → Open Razorpay → Verify Payment
   async function handleSubmit() {
     const btn = document.querySelector('.submit-btn');
-    const name = document.querySelector('input[type="text"]').value.trim();
-    const email = document.querySelector('input[type="email"]').value.trim();
-    const mobile = document.querySelector('input[type="tel"]').value.trim();
-    const language = document.querySelector('select').value;
+    const name = document.getElementById('subscribe-name').value.trim();
+    const email = document.getElementById('subscribe-email').value.trim();
+    const phone = document.getElementById('subscribe-phone').value.trim();
 
-    // Basic validation
-    if (!name || !email || !mobile) {
-      showError('Please fill in all required fields');
+    // Validation
+    if (!name) {
+      showError('Please enter your name');
+      return;
+    }
+    if (!email || !isValidEmail(email)) {
+      showError('Please enter a valid email address');
+      return;
+    }
+    if (!phone || !isValidPhone(phone)) {
+      showError('Please enter a valid phone number');
       return;
     }
 
     btn.disabled = true;
-    btn.textContent = 'Registering...';
+    btn.textContent = 'Creating order...';
 
     try {
-      // Step 1: Register user
-      const registerResponse = await fetch('/api/auth/register', {
+      // Step 1: Call /create-order endpoint
+      const orderResponse = await fetch('/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, mobile, language, plan: currentPlan })
-      });
-
-      const registerData = await registerResponse.json();
-
-      if (!registerResponse.ok) {
-        if (registerResponse.status === 409) {
-          // User exists, use existing userId
-          currentUserId = registerData.userId;
-          showSuccess('✓ Welcome back! Proceeding to payment...');
-        } else {
-          throw new Error(registerData.message || registerData.errors?.join(', ') || 'Registration failed');
-        }
-      } else {
-        currentUserId = registerData.data.userId;
-        showSuccess('✓ Registered! Your 7-day trial has started!');
-      }
-
-      // Wait a moment to show success message
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Step 2: Create payment order (optional - user can skip during trial)
-      btn.textContent = 'Setting up payment...';
-
-      const orderResponse = await fetch('/api/payments/create-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: currentUserId, plan: currentPlan })
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          plan: currentPlan
+        })
       });
 
       const orderData = await orderResponse.json();
 
       if (!orderResponse.ok) {
-        // If payment setup fails, still show success for registration
-        showSuccess('✓ Trial started! Check your email.');
-        setTimeout(() => {
-          closeModal();
-          resetForm();
-        }, 2000);
-        return;
+        throw new Error(orderData.message || orderData.error || 'Failed to create order');
       }
 
-      // Step 3: Open Razorpay checkout
+      // Step 2: Open Razorpay checkout with order details
       const options = {
-        key: orderData.data.keyId,
-        amount: orderData.data.amount,
-        currency: orderData.data.currency,
+        key: orderData.key_id, // RAZORPAY_KEY_ID from server
+        amount: orderData.amount,
+        currency: orderData.currency,
         name: 'IndiaGovWatch',
-        description: orderData.data.planName + ' - Monthly Subscription',
-        order_id: orderData.data.orderId,
+        description: `${orderData.plan_name || currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)} Plan - Monthly Subscription`,
+        order_id: orderData.order_id,
         prefill: {
-          name: orderData.data.userName,
-          email: orderData.data.userEmail
+          name: name,
+          email: email,
+          contact: phone
+        },
+        notes: {
+          plan: currentPlan,
+          customer_name: name,
+          customer_email: email
         },
         theme: {
           color: '#FF6B1A'
         },
         handler: async function(response) {
-          // Verify payment
+          // Step 3: Verify payment on success
+          btn.textContent = 'Verifying payment...';
+
           try {
-            const verifyResponse = await fetch('/api/payments/verify', {
+            const verifyResponse = await fetch('/verify-payment', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature
+                razorpay_signature: response.razorpay_signature,
+                name: name,
+                email: email,
+                phone: phone,
+                plan: currentPlan
               })
             });
 
             const verifyData = await verifyResponse.json();
 
-            if (verifyData.success) {
-              showSuccess('✓ Payment successful! Subscription active.');
+            if (verifyResponse.ok && verifyData.success) {
+              showSuccess('✓ Payment successful!');
               setTimeout(() => {
                 closeModal();
-                resetForm();
-              }, 2500);
+                // Optionally redirect or show success page
+                if (verifyData.redirect_url) {
+                  window.location.href = verifyData.redirect_url;
+                }
+              }, 2000);
             } else {
-              showError('Payment verification failed. Please contact support.');
+              showError(verifyData.message || 'Payment verification failed. Please contact support.');
               resetForm();
             }
           } catch (error) {
-            showError('Payment verification error. Please contact support.');
+            console.error('Verification error:', error);
+            showError('Payment verification error. Please contact support at support@indiagovwatch.com');
             resetForm();
           }
         },
         modal: {
           ondismiss: function() {
-            // User closed payment modal - trial is still active
-            showSuccess('✓ Trial active! Pay anytime within 7 days.');
-            setTimeout(() => {
-              closeModal();
-              resetForm();
-            }, 2000);
+            // User closed payment modal
+            resetForm();
           }
         }
       };
 
       const razorpay = new Razorpay(options);
+
       razorpay.on('payment.failed', function(response) {
-        showError('Payment failed: ' + response.error.description);
+        console.error('Payment failed:', response.error);
+        showError('Payment failed: ' + (response.error.description || 'Please try again'));
         resetForm();
       });
 
@@ -1681,6 +1683,14 @@
   // Keyboard close
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeModal();
+  });
+
+  // Initialize button text on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.querySelector('.submit-btn');
+    if (btn) {
+      btn.textContent = `Subscribe ${planPrices[currentPlan].display}/month →`;
+    }
   });
 </script>
 </body>
