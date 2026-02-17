@@ -1554,8 +1554,8 @@
     btn.textContent = 'Creating order...';
 
     try {
-      // Step 1: Call /create-order endpoint
-      const orderResponse = await fetch('/create-order', {
+      // Step 1: Call /api/create-order endpoint
+      const orderResponse = await fetch('/api/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1598,7 +1598,7 @@
           btn.textContent = 'Verifying payment...';
 
           try {
-            const verifyResponse = await fetch('/verify-payment', {
+            const verifyResponse = await fetch('/api/verify-payment', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
