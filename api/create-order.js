@@ -43,18 +43,24 @@ module.exports = async function handler(req, res) {
     }
 
     // Check Razorpay credentials
-    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-      console.error('Razorpay credentials not configured');
+    const keyId = process.env.RAZORPAY_KEY_ID;
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+    if (!keyId || !keySecret) {
+      console.error('Razorpay credentials missing:', { hasKeyId: !!keyId, hasKeySecret: !!keySecret });
       return res.status(500).json({
         success: false,
-        error: 'Payment system not configured'
+        error: 'Payment system not configured - missing credentials'
       });
     }
 
+    // Log key prefix for debugging (safe - only shows prefix)
+    console.log('Using Razorpay key:', keyId.substring(0, 12) + '...');
+
     // Initialize Razorpay
     const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET
+      key_id: keyId,
+      key_secret: keySecret
     });
 
     const planDetails = PLANS[plan];
@@ -75,7 +81,7 @@ module.exports = async function handler(req, res) {
     // Return order details for Razorpay checkout
     return res.status(200).json({
       success: true,
-      key_id: process.env.RAZORPAY_KEY_ID,
+      key_id: keyId,
       order_id: order.id,
       amount: order.amount,
       currency: order.currency,
