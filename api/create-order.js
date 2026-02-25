@@ -92,10 +92,28 @@ module.exports = async function handler(req, res) {
 
   } catch (error) {
     console.error('Create order error:', error);
-    const errorMessage = error.error?.description || error.message || JSON.stringify(error);
+
+    // Extract detailed error info
+    let errorMessage = 'Unknown error';
+    let errorDetails = {};
+
+    if (error.error) {
+      // Razorpay error format
+      errorMessage = error.error.description || error.error.reason || JSON.stringify(error.error);
+      errorDetails = {
+        code: error.error.code,
+        reason: error.error.reason,
+        field: error.error.field
+      };
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
     return res.status(500).json({
       success: false,
-      error: errorMessage
+      error: errorMessage,
+      details: errorDetails,
+      stack: process.env.NODE_ENV !== 'production' ? error.stack : undefined
     });
   }
 };
