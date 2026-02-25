@@ -35,8 +35,10 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // Check Razorpay credentials
-    if (!process.env.RAZORPAY_KEY_SECRET) {
+    // Check Razorpay credentials (trim any whitespace)
+    const keySecret = (process.env.RAZORPAY_KEY_SECRET || '').trim();
+
+    if (!keySecret) {
       console.error('Razorpay secret not configured');
       return res.status(500).json({
         success: false,
@@ -46,7 +48,7 @@ module.exports = async function handler(req, res) {
 
     // Verify signature
     const expectedSignature = crypto
-      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+      .createHmac('sha256', keySecret)
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
       .digest('hex');
 

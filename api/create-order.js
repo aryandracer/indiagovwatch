@@ -54,9 +54,6 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // Log key info for debugging (safe - only shows prefix and length)
-    console.log('Using Razorpay key:', keyId.substring(0, 12) + '...', 'length:', keyId.length);
-    console.log('Secret length:', keySecret.length);
 
     // Initialize Razorpay
     const razorpay = new Razorpay({
