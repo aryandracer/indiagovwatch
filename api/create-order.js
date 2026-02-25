@@ -42,9 +42,9 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // Check Razorpay credentials
-    const keyId = process.env.RAZORPAY_KEY_ID;
-    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    // Check Razorpay credentials (trim any whitespace)
+    const keyId = (process.env.RAZORPAY_KEY_ID || '').trim();
+    const keySecret = (process.env.RAZORPAY_KEY_SECRET || '').trim();
 
     if (!keyId || !keySecret) {
       console.error('Razorpay credentials missing:', { hasKeyId: !!keyId, hasKeySecret: !!keySecret });
@@ -54,8 +54,9 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // Log key prefix for debugging (safe - only shows prefix)
-    console.log('Using Razorpay key:', keyId.substring(0, 12) + '...');
+    // Log key info for debugging (safe - only shows prefix and length)
+    console.log('Using Razorpay key:', keyId.substring(0, 12) + '...', 'length:', keyId.length);
+    console.log('Secret length:', keySecret.length);
 
     // Initialize Razorpay
     const razorpay = new Razorpay({
