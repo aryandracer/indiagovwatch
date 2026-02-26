@@ -31,11 +31,17 @@ async function sendEmail({ to, subject, html, text }) {
       text: text || stripHtml(html)
     });
 
-    console.log(`Email sent to ${to}: ${result.id}`);
-    return { success: true, id: result.id };
+    // Check if result has an error
+    if (result.error) {
+      console.error(`Email failed to ${to}:`, result.error);
+      return { success: false, error: result.error.message || 'Email send failed' };
+    }
+
+    console.log(`Email sent to ${to}: ${result.data?.id || result.id}`);
+    return { success: true, id: result.data?.id || result.id };
 
   } catch (error) {
-    console.error('Email send error:', error);
+    console.error('Email send error:', error.message);
     return { success: false, error: error.message };
   }
 }
