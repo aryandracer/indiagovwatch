@@ -6,8 +6,9 @@ const resend = process.env.RESEND_API_KEY
   : null;
 
 // Email sender configuration
-const FROM_EMAIL = process.env.FROM_EMAIL || 'IndiaGovWatch <notifications@indiagovwatch.in>';
-const REPLY_TO = process.env.REPLY_TO_EMAIL || 'support@indiagovwatch.in';
+// Using Resend's onboarding domain for testing (no verification needed)
+const FROM_EMAIL = process.env.FROM_EMAIL || 'IndiaGovWatch <onboarding@resend.dev>';
+const REPLY_TO = process.env.REPLY_TO_EMAIL || 'noreply@resend.dev';
 
 /**
  * Send an email via Resend
