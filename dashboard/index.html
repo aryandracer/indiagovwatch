@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - IndiaGovWatch Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --saffron: #FF6B1A;
+      --saffron-light: #FF8C42;
+      --green-india: #138808;
+      --navy: #0B1426;
+      --navy-mid: #112240;
+      --navy-card: #162B4D;
+      --navy-border: #1E3A5F;
+      --white: #F8F4EF;
+      --text-body: #C5D0E0;
+      --error: #EF4444;
+      --success: #10B981;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--navy-border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .ashoka {
+      width: 36px;
+      height: 36px;
+      background: conic-gradient(from 0deg, var(--saffron), #E8C547, var(--green-india), var(--saffron));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      animation: spin 20s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .logo span {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .logo span em {
+      color: var(--saffron);
+      font-style: normal;
+    }
+
+    /* Main Content */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .login-card {
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-radius: 16px;
+      padding: 48px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .login-card h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .login-card p.subtitle {
+      color: var(--text-body);
+      font-size: 15px;
+      margin-bottom: 32px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--text-body);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy-mid);
+      border: 1px solid var(--navy-border);
+      border-radius: 8px;
+      color: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--saffron);
+      box-shadow: 0 0 0 3px rgba(255, 107, 26, 0.15);
+    }
+
+    .form-group input::placeholder {
+      color: #5A6B8A;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--saffron);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--saffron-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      background: #555;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error-message {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--error);
+      color: var(--error);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .success-message {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--success);
+      color: var(--success);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--navy-border);
+    }
+
+    .register-link p {
+      color: var(--text-body);
+      font-size: 14px;
+    }
+
+    .register-link a {
+      color: var(--saffron);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    /* Footer */
+    footer {
+      padding: 20px 40px;
+      text-align: center;
+      border-top: 1px solid var(--navy-border);
+    }
+
+    footer p {
+      color: var(--text-body);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">
+      <div class="ashoka"></div>
+      <span>India<em>Gov</em>Watch</span>
+    </a>
+  </header>
+
+  <main>
+    <div class="login-card">
+      <h1>Welcome back</h1>
+      <p class="subtitle">Sign in to your IndiaGovWatch dashboard</p>
+
+      <div id="errorMessage" class="error-message"></div>
+      <div id="successMessage" class="success-message"></div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="your@email.com"
+            required
+            autocomplete="email"
+          >
+        </div>
+
+        <button type="submit" class="btn-primary" id="submitBtn">
+          Send OTP
+        </button>
+      </form>
+
+      <div class="register-link">
+        <p>Don't have an account? <a href="/#pricing">Register now</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 IndiaGovWatch. Stay informed, stay ahead.</p>
+  </footer>
+
+  <script>
+    const API_BASE = '/api';
+
+    const form = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorMsg = document.getElementById('errorMessage');
+    const successMsg = document.getElementById('successMessage');
+
+    // Check if already logged in
+    const token = localStorage.getItem('igw_token');
+    if (token) {
+      window.location.href = '/dashboard/home.html';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = emailInput.value.trim().toLowerCase();
+
+      if (!email) {
+        showError('Please enter your email address');
+        return;
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        showError('Please enter a valid email address');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner"></span> Sending OTP...';
+      hideMessages();
+
+      try {
+        const response = await fetch(`${API_BASE}/auth/send-otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Store email for verify page
+          sessionStorage.setItem('igw_verify_email', email);
+          showSuccess('OTP sent! Check your email.');
+
+          // Redirect to verify page after a moment
+          setTimeout(() => {
+            window.location.href = '/dashboard/verify.html';
+          }, 1500);
+        } else {
+          if (data.action === 'register') {
+            showError('No account found. Please register first.');
+          } else {
+            showError(data.error || 'Failed to send OTP. Please try again.');
+          }
+          resetButton();
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        showError('Network error. Please check your connection.');
+        resetButton();
+      }
+    });
+
+    function showError(message) {
+      errorMsg.textContent = message;
+      errorMsg.classList.add('show');
+      successMsg.classList.remove('show');
+    }
+
+    function showSuccess(message) {
+      successMsg.textContent = message;
+      successMsg.classList.add('show');
+      errorMsg.classList.remove('show');
+    }
+
+    function hideMessages() {
+      errorMsg.classList.remove('show');
+      successMsg.classList.remove('show');
+    }
+
+    function resetButton() {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Send OTP';
+    }
+  </script>
+</body>
+</html>

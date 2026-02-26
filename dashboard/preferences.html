@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preferences - IndiaGovWatch Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --saffron: #FF6B1A;
+      --saffron-light: #FF8C42;
+      --green-india: #138808;
+      --navy: #0B1426;
+      --navy-mid: #112240;
+      --navy-card: #162B4D;
+      --navy-border: #1E3A5F;
+      --white: #F8F4EF;
+      --text-body: #C5D0E0;
+      --error: #EF4444;
+      --success: #10B981;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* Sidebar - same as home */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 260px;
+      background: var(--navy-mid);
+      border-right: 1px solid var(--navy-border);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 40px;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .ashoka {
+      width: 32px;
+      height: 32px;
+      background: conic-gradient(from 0deg, var(--saffron), #E8C547, var(--green-india), var(--saffron));
+      border-radius: 50%;
+      animation: spin 20s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .sidebar-logo span {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .sidebar-logo span em {
+      color: var(--saffron);
+      font-style: normal;
+    }
+
+    .nav-menu { flex: 1; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      margin-bottom: 4px;
+      border-radius: 8px;
+      color: var(--text-body);
+      text-decoration: none;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+      background: var(--navy-card);
+      color: var(--white);
+    }
+
+    .nav-item.active {
+      background: var(--saffron);
+      color: white;
+    }
+
+    .nav-item .icon {
+      font-size: 18px;
+      width: 24px;
+      text-align: center;
+    }
+
+    .user-section {
+      border-top: 1px solid var(--navy-border);
+      padding-top: 20px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--saffron);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .user-details h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .user-details p {
+      font-size: 12px;
+      color: var(--text-body);
+    }
+
+    .logout-btn {
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      border: 1px solid var(--navy-border);
+      border-radius: 6px;
+      color: var(--text-body);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .logout-btn:hover {
+      border-color: var(--error);
+      color: var(--error);
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 260px;
+      padding: 32px 40px;
+      max-width: 900px;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: var(--text-body);
+      font-size: 15px;
+    }
+
+    /* Form Sections */
+    .form-section {
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .form-section h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-section p.description {
+      color: var(--text-body);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    /* Checkbox Grid */
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: var(--navy-mid);
+      border: 1px solid var(--navy-border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .checkbox-item:hover {
+      border-color: var(--saffron);
+    }
+
+    .checkbox-item.selected {
+      border-color: var(--green-india);
+      background: rgba(19, 136, 8, 0.1);
+    }
+
+    .checkbox-item input {
+      display: none;
+    }
+
+    .checkbox-item .check {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--navy-border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .checkbox-item.selected .check {
+      background: var(--green-india);
+      border-color: var(--green-india);
+    }
+
+    .checkbox-item .check::after {
+      content: '✓';
+      color: white;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .checkbox-item.selected .check::after {
+      opacity: 1;
+    }
+
+    .checkbox-item .label {
+      font-size: 14px;
+    }
+
+    /* State Select */
+    .state-select {
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .state-select::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .state-select::-webkit-scrollbar-track {
+      background: var(--navy-mid);
+      border-radius: 3px;
+    }
+
+    .state-select::-webkit-scrollbar-thumb {
+      background: var(--navy-border);
+      border-radius: 3px;
+    }
+
+    /* Keywords */
+    .keywords-input-container {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .keywords-input {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy-mid);
+      border: 1px solid var(--navy-border);
+      border-radius: 8px;
+      color: var(--white);
+    }
+
+    .keywords-input:focus {
+      outline: none;
+      border-color: var(--saffron);
+    }
+
+    .add-keyword-btn {
+      padding: 12px 20px;
+      background: var(--saffron);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .add-keyword-btn:hover {
+      background: var(--saffron-light);
+    }
+
+    .keywords-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .keyword-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: var(--navy-mid);
+      border: 1px solid var(--navy-border);
+      border-radius: 20px;
+      font-size: 13px;
+    }
+
+    .keyword-tag button {
+      background: none;
+      border: none;
+      color: var(--text-body);
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .keyword-tag button:hover {
+      color: var(--error);
+    }
+
+    /* Save Button */
+    .save-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-radius: 12px;
+      position: sticky;
+      bottom: 20px;
+    }
+
+    .save-section p {
+      color: var(--text-body);
+      font-size: 14px;
+    }
+
+    .save-btn {
+      padding: 12px 32px;
+      background: var(--saffron);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .save-btn:hover {
+      background: var(--saffron-light);
+      transform: translateY(-1px);
+    }
+
+    .save-btn:disabled {
+      background: #555;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      background: var(--green-india);
+      color: white;
+    }
+
+    .toast.error {
+      background: var(--error);
+      color: white;
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-body);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border: 3px solid var(--navy-border);
+      border-radius: 50%;
+      border-top-color: var(--saffron);
+      animation: spin 0.8s linear infinite;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .main-content {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a href="/" class="sidebar-logo">
+      <div class="ashoka"></div>
+      <span>India<em>Gov</em>Watch</span>
+    </a>
+
+    <nav class="nav-menu">
+      <a href="/dashboard/home.html" class="nav-item">
+        <span class="icon">🏠</span>
+        Dashboard
+      </a>
+      <a href="/dashboard/preferences.html" class="nav-item active">
+        <span class="icon">⚙️</span>
+        Preferences
+      </a>
+      <a href="/dashboard/subscription.html" class="nav-item">
+        <span class="icon">💳</span>
+        Subscription
+      </a>
+    </nav>
+
+    <div class="user-section">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-details">
+          <h4 id="userName">User</h4>
+          <p id="userEmail">email@example.com</p>
+        </div>
+      </div>
+      <button class="logout-btn" id="logoutBtn">Sign out</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Preferences</h1>
+      <p>Customize your daily digest to receive updates that matter most to you</p>
+    </div>
+
+    <div id="preferencesForm">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading preferences...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API_BASE = '/api';
+    let currentPreferences = {};
+    let hasChanges = false;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check authentication
+      const token = localStorage.getItem('igw_token');
+      if (!token) {
+        window.location.href = '/dashboard/';
+        return;
+      }
+
+      // Load user data
+      const user = JSON.parse(localStorage.getItem('igw_user') || '{}');
+      if (user.name) {
+        document.getElementById('userName').textContent = user.name;
+        document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+      }
+      if (user.email) {
+        document.getElementById('userEmail').textContent = user.email;
+      }
+
+      // Load preferences
+      loadPreferences();
+
+      // Logout handler
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('igw_token');
+        localStorage.removeItem('igw_user');
+        localStorage.removeItem('igw_subscription');
+        window.location.href = '/dashboard/';
+      });
+    });
+
+    async function loadPreferences() {
+      const token = localStorage.getItem('igw_token');
+      const container = document.getElementById('preferencesForm');
+
+      try {
+        const response = await fetch(`${API_BASE}/user/preferences`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          currentPreferences = data.preferences;
+          renderPreferencesForm(data.preferences, data.options);
+        } else {
+          container.innerHTML = `<div class="loading"><p>Failed to load preferences. Please try again.</p></div>`;
+        }
+      } catch (error) {
+        console.error('Error loading preferences:', error);
+        container.innerHTML = `<div class="loading"><p>Network error. Please check your connection.</p></div>`;
+      }
+    }
+
+    function renderPreferencesForm(preferences, options) {
+      const container = document.getElementById('preferencesForm');
+
+      container.innerHTML = `
+        <!-- Categories -->
+        <div class="form-section">
+          <h2>Content Categories</h2>
+          <p class="description">Select the types of government updates you want to receive</p>
+          <div class="checkbox-grid" id="categoriesGrid">
+            ${options.categories.map(cat => `
+              <label class="checkbox-item ${preferences.categories.includes(cat.id) ? 'selected' : ''}" data-value="${cat.id}">
+                <input type="checkbox" ${preferences.categories.includes(cat.id) ? 'checked' : ''}>
+                <span class="check"></span>
+                <span class="label">${cat.name}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- States -->
+        <div class="form-section">
+          <h2>State Preferences</h2>
+          <p class="description">Select states to receive location-specific updates. Leave empty for all India.</p>
+          <div class="checkbox-grid state-select" id="statesGrid">
+            ${options.states.map(state => `
+              <label class="checkbox-item ${preferences.states.includes(state) ? 'selected' : ''}" data-value="${state}">
+                <input type="checkbox" ${preferences.states.includes(state) ? 'checked' : ''}>
+                <span class="check"></span>
+                <span class="label">${state}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Keywords -->
+        <div class="form-section">
+          <h2>Keyword Alerts</h2>
+          <p class="description">Add keywords to receive alerts when they appear in government updates</p>
+          <div class="keywords-input-container">
+            <input type="text" class="keywords-input" id="keywordInput" placeholder="Enter a keyword (e.g., scholarship, UPSC)">
+            <button class="add-keyword-btn" id="addKeywordBtn">Add</button>
+          </div>
+          <div class="keywords-list" id="keywordsList">
+            ${preferences.keywords.map(kw => `
+              <span class="keyword-tag" data-keyword="${kw}">
+                ${kw}
+                <button type="button" onclick="removeKeyword('${kw}')">&times;</button>
+              </span>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="save-section">
+          <p id="saveStatus">Changes are saved automatically</p>
+          <button class="save-btn" id="saveBtn">Save Preferences</button>
+        </div>
+      `;
+
+      // Add event listeners
+      setupEventListeners();
+    }
+
+    function setupEventListeners() {
+      // Category checkboxes
+      document.querySelectorAll('#categoriesGrid .checkbox-item').forEach(item => {
+        item.addEventListener('click', () => {
+          item.classList.toggle('selected');
+          item.querySelector('input').checked = item.classList.contains('selected');
+          markChanged();
+        });
+      });
+
+      // State checkboxes
+      document.querySelectorAll('#statesGrid .checkbox-item').forEach(item => {
+        item.addEventListener('click', () => {
+          item.classList.toggle('selected');
+          item.querySelector('input').checked = item.classList.contains('selected');
+          markChanged();
+        });
+      });
+
+      // Add keyword
+      document.getElementById('addKeywordBtn').addEventListener('click', addKeyword);
+      document.getElementById('keywordInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          addKeyword();
+        }
+      });
+
+      // Save button
+      document.getElementById('saveBtn').addEventListener('click', savePreferences);
+    }
+
+    function addKeyword() {
+      const input = document.getElementById('keywordInput');
+      const keyword = input.value.trim().toLowerCase();
+
+      if (!keyword) return;
+
+      // Check if already exists
+      const existingKeywords = getCurrentKeywords();
+      if (existingKeywords.includes(keyword)) {
+        showToast('Keyword already added', 'error');
+        return;
+      }
+
+      // Add to list
+      const list = document.getElementById('keywordsList');
+      const tag = document.createElement('span');
+      tag.className = 'keyword-tag';
+      tag.dataset.keyword = keyword;
+      tag.innerHTML = `${keyword}<button type="button" onclick="removeKeyword('${keyword}')">&times;</button>`;
+      list.appendChild(tag);
+
+      input.value = '';
+      markChanged();
+    }
+
+    function removeKeyword(keyword) {
+      const tag = document.querySelector(`.keyword-tag[data-keyword="${keyword}"]`);
+      if (tag) {
+        tag.remove();
+        markChanged();
+      }
+    }
+
+    function getCurrentKeywords() {
+      return Array.from(document.querySelectorAll('.keyword-tag')).map(tag => tag.dataset.keyword);
+    }
+
+    function markChanged() {
+      hasChanges = true;
+      document.getElementById('saveStatus').textContent = 'You have unsaved changes';
+    }
+
+    async function savePreferences() {
+      const token = localStorage.getItem('igw_token');
+      const saveBtn = document.getElementById('saveBtn');
+
+      // Gather current values
+      const categories = Array.from(document.querySelectorAll('#categoriesGrid .checkbox-item.selected'))
+        .map(item => item.dataset.value);
+
+      const states = Array.from(document.querySelectorAll('#statesGrid .checkbox-item.selected'))
+        .map(item => item.dataset.value);
+
+      const keywords = getCurrentKeywords();
+
+      if (categories.length === 0) {
+        showToast('Please select at least one category', 'error');
+        return;
+      }
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+
+      try {
+        const response = await fetch(`${API_BASE}/user/preferences`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ categories, states, keywords })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          showToast('Preferences saved successfully', 'success');
+          hasChanges = false;
+          document.getElementById('saveStatus').textContent = 'All changes saved';
+        } else {
+          showToast(data.error || 'Failed to save preferences', 'error');
+        }
+      } catch (error) {
+        console.error('Error saving preferences:', error);
+        showToast('Network error. Please try again.', 'error');
+      }
+
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save Preferences';
+    }
+
+    function showToast(message, type) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

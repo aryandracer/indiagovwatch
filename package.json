@@ -1,16 +1,28 @@
 {
   "name": "indiagovwatch",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "India's Civic Intelligence Platform - Government schemes, jobs, tenders, RTI updates",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fetch-content": "node -e \"require('./services/content/fetcher').fetchAllContent().then(console.log)\"",
+    "init-sources": "node -e \"require('./services/content/fetcher').initializeSources().then(console.log)\""
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aryandracer/indiagovwatch.git"
   },
-  "keywords": [],
+  "keywords": [
+    "government",
+    "india",
+    "schemes",
+    "jobs",
+    "tenders",
+    "rti",
+    "civic"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
@@ -19,13 +31,17 @@
   },
   "homepage": "https://github.com/aryandracer/indiagovwatch#readme",
   "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
     "better-sqlite3": "^12.6.2",
     "cashfree-pg": "^5.1.0",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.2",
     "nodemailer": "^8.0.1",
     "razorpay": "^2.9.6",
+    "resend": "^4.0.0",
+    "rss-parser": "^3.13.0",
     "uuid": "^13.0.0"
   }
 }
