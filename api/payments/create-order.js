@@ -79,10 +79,14 @@ module.exports = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Create order error:', error.message, error.stack);
+    console.error('Create order error:', error);
+    // Return detailed error for debugging
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to create payment order'
+      message: 'Failed to create payment order',
+      error: error.message,
+      details: error.error || error.description || null,
+      keyPresent: !!process.env.RAZORPAY_KEY_ID
     });
   }
 };
