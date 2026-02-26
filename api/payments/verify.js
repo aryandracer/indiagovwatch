@@ -1,4 +1,7 @@
+require('dotenv').config();
 const crypto = require('crypto');
+const { subscriptionQueries, paymentQueries, userQueries } = require('../../lib/supabase');
+const { sendPaymentConfirmationEmail } = require('../../services/notifications/email-sender');
 
 module.exports = async (req, res) => {
   // Enable CORS
@@ -15,7 +18,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, userId, plan } = req.body;
 
     // Validation
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -40,8 +43,37 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Payment verified successfully
-    // In production, update the subscription status in the database
+    // Payment verified - update database
+    if (userId) {
+      // Record payment
+      await paymentQueries.create({
+        user_id: userId,
+        razorpay_order_id,
+        razorpay_payment_id,
+        amount: plan === 'global' ? 900 : (plan === 'pro' ? 29900 : 9900),
+        currency: plan === 'global' ? 'USD' : 'INR',
+        status: 'completed'
+      });
+
+      // Update subscription to active
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + 30);
+
+      await subscriptionQueries.updateByUserId(userId, {
+        status: 'active',
+        plan: plan || 'bharat',
+        start_date: new Date().toISOString(),
+        end_date: endDate.toISOString()
+      });
+
+      // Send confirmation email (async)
+      const user = await userQueries.findById(userId);
+      if (user) {
+        sendPaymentConfirmationEmail(user, { razorpay_payment_id, amount: plan === 'global' ? 900 : (plan === 'pro' ? 29900 : 9900), currency: plan === 'global' ? 'USD' : 'INR' }, plan).catch(err => {
+          console.error('Payment confirmation email failed:', err.message);
+        });
+      }
+    }
 
     return res.status(200).json({
       success: true,

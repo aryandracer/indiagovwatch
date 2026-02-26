@@ -1530,7 +1530,7 @@
     return digits.length >= 10;
   }
 
-  // Payment flow: Submit form → Create Order → Open Razorpay → Verify Payment
+  // Payment flow: Register User → Create Order → Open Razorpay → Verify Payment
   async function handleSubmit() {
     const btn = document.querySelector('.submit-btn');
     const name = document.getElementById('subscribe-name').value.trim();
@@ -1552,17 +1552,41 @@
     }
 
     btn.disabled = true;
-    btn.textContent = 'Creating order...';
+    btn.textContent = 'Registering...';
 
     try {
-      // Step 1: Call /api/create-order endpoint
-      const orderResponse = await fetch('/api/create-order', {
+      // Step 1: Register user first
+      const registerResponse = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name,
           email,
-          phone,
+          mobile: phone,
+          plan: currentPlan
+        })
+      });
+
+      const registerData = await registerResponse.json();
+
+      // User might already exist - that's OK, we can continue
+      let userId;
+      if (registerResponse.ok && registerData.success) {
+        userId = registerData.data.userId;
+      } else if (registerResponse.status === 409 && registerData.userId) {
+        // User already exists
+        userId = registerData.userId;
+      } else {
+        throw new Error(registerData.message || registerData.errors?.join(', ') || 'Registration failed');
+      }
+
+      // Step 2: Create payment order
+      btn.textContent = 'Creating order...';
+      const orderResponse = await fetch('/api/payments/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
           plan: currentPlan
         })
       });
@@ -1570,17 +1594,17 @@
       const orderData = await orderResponse.json();
 
       if (!orderResponse.ok) {
-        throw new Error(orderData.message || orderData.error || 'Failed to create order');
+        throw new Error(orderData.message || 'Failed to create order');
       }
 
-      // Step 2: Open Razorpay checkout with order details
+      // Step 3: Open Razorpay checkout with order details
       const options = {
-        key: orderData.key_id, // RAZORPAY_KEY_ID from server
-        amount: orderData.amount,
-        currency: orderData.currency,
+        key: orderData.data.keyId,
+        amount: orderData.data.amount,
+        currency: orderData.data.currency,
         name: 'IndiaGovWatch',
-        description: `${orderData.plan_name || currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)} Plan - Monthly Subscription`,
-        order_id: orderData.order_id,
+        description: `${orderData.data.planName || currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)} - Monthly Subscription`,
+        order_id: orderData.data.orderId,
         prefill: {
           name: name,
           email: email,
@@ -1588,27 +1612,24 @@
         },
         notes: {
           plan: currentPlan,
-          customer_name: name,
-          customer_email: email
+          userId: userId
         },
         theme: {
           color: '#FF6B1A'
         },
         handler: async function(response) {
-          // Step 3: Verify payment on success
+          // Step 4: Verify payment on success
           btn.textContent = 'Verifying payment...';
 
           try {
-            const verifyResponse = await fetch('/api/verify-payment', {
+            const verifyResponse = await fetch('/api/payments/verify', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
-                name: name,
-                email: email,
-                phone: phone,
+                userId: userId,
                 plan: currentPlan
               })
             });
@@ -1616,13 +1637,11 @@
             const verifyData = await verifyResponse.json();
 
             if (verifyResponse.ok && verifyData.success) {
-              showSuccess('✓ Payment successful!');
+              showSuccess('✓ Payment successful! Your subscription is active.');
               setTimeout(() => {
                 closeModal();
-                // Optionally redirect or show success page
-                if (verifyData.redirect_url) {
-                  window.location.href = verifyData.redirect_url;
-                }
+                // Redirect to dashboard
+                window.location.href = '/dashboard';
               }, 2000);
             } else {
               showError(verifyData.message || 'Payment verification failed. Please contact support.');
