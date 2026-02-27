@@ -537,6 +537,152 @@
     margin-top: 3px;
   }
 
+  /* ── NRI SECTION ── */
+  .nri-section {
+    background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy) 100%);
+    padding: 100px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nri-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, var(--saffron-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .nri-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .nri-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    margin-top: 48px;
+  }
+
+  .nri-content h3 {
+    font-size: 28px;
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 16px;
+  }
+
+  .nri-content h3 em {
+    color: var(--saffron);
+    font-style: normal;
+  }
+
+  .nri-content p {
+    color: var(--text-body);
+    font-size: 17px;
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+
+  .nri-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .nri-feature {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .nri-feature:hover {
+    border-color: var(--saffron);
+    transform: translateY(-2px);
+  }
+
+  .nri-feature .icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .nri-feature h4 {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .nri-feature p {
+    font-size: 13px;
+    color: var(--text-body);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .nri-globe {
+    position: relative;
+    text-align: center;
+  }
+
+  .nri-globe-visual {
+    width: 320px;
+    height: 320px;
+    margin: 0 auto;
+    background: radial-gradient(circle at 30% 30%, var(--navy-card) 0%, var(--navy) 100%);
+    border-radius: 50%;
+    border: 2px solid var(--navy-border);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 120px;
+  }
+
+  .nri-globe-visual::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    border: 1px dashed var(--navy-border);
+    border-radius: 50%;
+    animation: spin 60s linear infinite;
+  }
+
+  .nri-countries {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .nri-country {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  @media (max-width: 900px) {
+    .nri-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .nri-features {
+      grid-template-columns: 1fr;
+    }
+    .nri-globe {
+      order: -1;
+    }
+  }
+
   /* ── PRICING ── */
   .pricing-section {
     background: var(--navy-mid);
@@ -1005,8 +1151,8 @@
   </div>
   <div class="nav-links">
     <a href="#features">Features</a>
+    <a href="#nri">For NRIs</a>
     <a href="#pricing">Pricing</a>
-    <a href="#audience">Who It's For</a>
     <a href="/dashboard/" style="font-weight: 600;">Login</a>
     <a href="#" class="nav-cta" onclick="openModal()">Subscribe Free →</a>
   </div>
@@ -1210,6 +1356,69 @@
     <div class="lang-badge">മലയാളം</div>
     <div class="lang-badge">ਪੰਜਾਬੀ</div>
     <div class="lang-badge">English</div>
+  </div>
+</section>
+
+<!-- NRI SECTION -->
+<section class="nri-section" id="nri">
+  <div class="nri-inner">
+    <div class="animate-in" style="text-align:center">
+      <p class="section-eyebrow">For Indians Abroad</p>
+      <h2 class="section-title">Stay connected to <em>India</em> — from anywhere in the world</h2>
+      <p style="color:var(--text-body);margin-top:16px;font-size:17px;max-width:700px;margin-left:auto;margin-right:auto">Whether you're in the US, UK, UAE, or anywhere else — never miss updates that matter to you and your family back home.</p>
+    </div>
+
+    <div class="nri-grid animate-in">
+      <div class="nri-content">
+        <h3>Why <em>30 lakh+ NRIs</em> need IndiaGovWatch</h3>
+        <p>Your parents' pension, your property in India, your children's education plans — everything is affected by government policies. Stay informed, stay prepared.</p>
+
+        <div class="nri-features">
+          <div class="nri-feature">
+            <div class="icon">👨‍👩‍👧</div>
+            <h4>Family Benefits</h4>
+            <p>Ayushman Bharat, pension schemes, senior citizen benefits for parents</p>
+          </div>
+          <div class="nri-feature">
+            <div class="icon">🏠</div>
+            <h4>Property & Land</h4>
+            <p>Land policy changes, property tax updates, NRI property rules</p>
+          </div>
+          <div class="nri-feature">
+            <div class="icon">💰</div>
+            <h4>Tax & Investment</h4>
+            <p>NRI taxation, FEMA updates, RBI policies, investment schemes</p>
+          </div>
+          <div class="nri-feature">
+            <div class="icon">🛂</div>
+            <h4>OCI & Travel</h4>
+            <p>OCI card rules, visa changes, passport updates, travel advisories</p>
+          </div>
+          <div class="nri-feature">
+            <div class="icon">🎓</div>
+            <h4>Education</h4>
+            <p>UPSC, NEET, JEE dates, scholarship schemes for your children</p>
+          </div>
+          <div class="nri-feature">
+            <div class="icon">✈️</div>
+            <h4>Return to India</h4>
+            <p>Government jobs, startup schemes, business opportunities</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="nri-globe">
+        <div class="nri-globe-visual">🇮🇳</div>
+        <div class="nri-countries">
+          <span class="nri-country">🇺🇸 USA</span>
+          <span class="nri-country">🇬🇧 UK</span>
+          <span class="nri-country">🇦🇪 UAE</span>
+          <span class="nri-country">🇨🇦 Canada</span>
+          <span class="nri-country">🇦🇺 Australia</span>
+          <span class="nri-country">🇸🇬 Singapore</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
