@@ -54,15 +54,7 @@ const RSS_SOURCES = [
     priority: 1,
     description: 'Policy think tank releases'
   },
-  {
-    name: 'PIB Finance Ministry',
-    category: 'policy',
-    source_type: 'rss',
-    feed_url: 'https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3',
-    state: null,
-    priority: 1,
-    description: 'Finance ministry press releases'
-  },
+  // Removed PIB Finance Ministry (returns 403 from Vercel IPs)
 
   // ===============================================
   // SCHEMES - Welfare & Citizen Services
@@ -80,24 +72,9 @@ const RSS_SOURCES = [
   // ===============================================
   // NEWS - Filtered for Government Keywords
   // ===============================================
-  {
-    name: 'Business Standard - Economy',
-    category: 'policy',
-    source_type: 'rss',
-    feed_url: 'https://www.business-standard.com/rss/economy-policy-10201.rss',
-    state: null,
-    priority: 2,
-    description: 'Economic policy news'
-  },
-  {
-    name: 'Livemint - Politics',
-    category: 'policy',
-    source_type: 'rss',
-    feed_url: 'https://www.livemint.com/rss/politics',
-    state: null,
-    priority: 2,
-    description: 'Political and policy news'
-  }
+  // Removed Business Standard (returns 403)
+  // Removed Livemint (slow response)
+  // Removed PIB Finance (returns 403)
 ];
 
 // Category definitions with keywords for filtering

@@ -125,7 +125,7 @@ function getOfficialUrl(title, description) {
 
 // Initialize RSS parser with custom fields
 const parser = new Parser({
-  timeout: 30000, // 30 second timeout
+  timeout: 5000, // 5 second timeout per feed
   headers: {
     'User-Agent': 'IndiaGovWatch/1.0 (+https://indiagovwatch.in)',
     'Accept': 'application/rss+xml, application/xml, text/xml, */*'
