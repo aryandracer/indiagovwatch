@@ -18,6 +18,10 @@
     { "src": "/dashboard", "dest": "/dashboard/index.html" },
     { "src": "/blog/(.*)", "dest": "/blog/$1" },
     { "src": "/blog", "dest": "/blog/index.html" },
+    { "src": "/tools/eligibility-checker", "dest": "/tools/eligibility-checker.html" },
+    { "src": "/tools/salary-calculator", "dest": "/tools/salary-calculator.html" },
+    { "src": "/tools/(.*)", "dest": "/tools/$1" },
+    { "src": "/tools", "dest": "/tools/index.html" },
     { "src": "/(.*\\.(html|css|js|svg|png|jpg|ico|xml|txt))", "dest": "/$1" },
     { "src": "/", "dest": "/index.html" }
   ]

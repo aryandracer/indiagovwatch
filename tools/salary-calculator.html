@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Government Salary Calculator 2026 | 7th Pay Commission | IndiaGovWatch</title>
+<meta name="description" content="Calculate your government job salary with 7th Pay Commission. Check basic pay, DA, HRA, TA & gross salary for all pay levels.">
+<meta name="keywords" content="government salary calculator, 7th pay commission, basic pay, DA calculator, HRA calculator, central government salary">
+<link rel="canonical" href="https://indiagovwatch.com/tools/salary-calculator">
+<meta property="og:title" content="Government Salary Calculator 2026 | 7th Pay Commission">
+<meta property="og:description" content="Calculate government salary with DA, HRA, TA. Free tool by IndiaGovWatch.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF6B1A;
+    --green-india: #138808;
+    --navy: #0B1426;
+    --navy-card: #162B4D;
+    --navy-border: #1E3A5F;
+    --white: #F8F4EF;
+    --text-body: #C5D0E0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--navy); color: var(--white); font-family: 'DM Sans', sans-serif; line-height: 1.7; }
+
+  nav {
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--navy-border);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--white); }
+  .nav-logo span { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 900; }
+  .nav-logo em { color: var(--saffron); font-style: normal; }
+  .nav-links { display: flex; gap: 30px; align-items: center; }
+  .nav-links a { color: var(--text-body); text-decoration: none; }
+  .nav-cta { background: var(--saffron); color: white; padding: 10px 20px; border-radius: 6px; font-weight: 600; }
+
+  .hero {
+    max-width: 900px;
+    margin: 60px auto 40px;
+    padding: 0 20px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--saffron); }
+  .hero p { color: var(--text-body); font-size: 18px; }
+
+  .tool-container {
+    max-width: 900px;
+    margin: 0 auto 60px;
+    padding: 0 20px;
+  }
+
+  .calculator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+
+  .form-card, .result-card {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 12px;
+    padding: 32px;
+  }
+
+  .form-card h3, .result-card h3 {
+    font-size: 20px;
+    margin-bottom: 24px;
+    color: var(--saffron);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--white);
+  }
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--navy-border);
+    border-radius: 8px;
+    background: var(--navy);
+    color: var(--white);
+    font-size: 16px;
+  }
+  .form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--saffron);
+  }
+  .form-group small {
+    color: var(--text-body);
+    font-size: 12px;
+  }
+
+  .btn-calculate {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--saffron), var(--green-india));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  .btn-calculate:hover { opacity: 0.9; }
+
+  .salary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--navy-border);
+  }
+  .salary-row:last-child { border-bottom: none; }
+  .salary-row .label { color: var(--text-body); }
+  .salary-row .value { font-weight: 600; }
+  .salary-row.total {
+    background: rgba(255,107,26,0.1);
+    margin: 16px -16px -16px;
+    padding: 16px;
+    border-radius: 0 0 8px 8px;
+  }
+  .salary-row.total .label { color: var(--white); font-weight: 600; }
+  .salary-row.total .value { color: var(--saffron); font-size: 24px; }
+
+  .salary-row.deduction .value { color: #FF3B30; }
+  .salary-row.net {
+    background: rgba(19,136,8,0.1);
+    margin: 16px -16px -16px;
+    padding: 16px;
+    border-radius: 0 0 8px 8px;
+  }
+  .salary-row.net .label { color: var(--white); font-weight: 600; }
+  .salary-row.net .value { color: var(--green-india); font-size: 24px; }
+
+  .info-box {
+    background: rgba(255,107,26,0.1);
+    border-left: 4px solid var(--saffron);
+    padding: 16px;
+    margin-top: 24px;
+    border-radius: 0 8px 8px 0;
+  }
+  .info-box h4 { color: var(--saffron); margin-bottom: 8px; }
+  .info-box p { color: var(--text-body); font-size: 14px; margin: 0; }
+
+  .cta-box {
+    background: linear-gradient(135deg, var(--saffron), var(--green-india));
+    padding: 32px;
+    border-radius: 12px;
+    text-align: center;
+    margin-top: 40px;
+  }
+  .cta-box h3 { font-size: 24px; margin-bottom: 12px; }
+  .cta-box p { margin-bottom: 20px; opacity: 0.9; }
+  .cta-btn {
+    display: inline-block;
+    background: white;
+    color: var(--navy);
+    padding: 12px 28px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-body);
+    font-size: 14px;
+    border-top: 1px solid var(--navy-border);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 15px 20px; }
+    .hero h1 { font-size: 28px; }
+    .calculator-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo"><span>India<em>Gov</em>Watch</span></a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/tools/">Tools</a>
+    <a href="/blog/">Blog</a>
+    <a href="/#pricing" class="nav-cta">Subscribe</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Government <span>Salary Calculator</span></h1>
+  <p>Calculate your take-home salary as per 7th Pay Commission (Updated DA: 53%)</p>
+</section>
+
+<div class="tool-container">
+  <div class="calculator-grid">
+    <div class="form-card">
+      <h3>Enter Details</h3>
+
+      <div class="form-group">
+        <label>Pay Level (7th CPC)</label>
+        <select id="payLevel" onchange="updateBasicPay()">
+          <option value="1">Level 1 (18000-56900) - MTS, Group D</option>
+          <option value="2">Level 2 (19900-63200) - LDC</option>
+          <option value="3">Level 3 (21700-69100) - UDC</option>
+          <option value="4">Level 4 (25500-81100) - Jr. Accountant</option>
+          <option value="5">Level 5 (29200-92300) - Sr. Clerk</option>
+          <option value="6">Level 6 (35400-112400) - Assistant</option>
+          <option value="7" selected>Level 7 (44900-142400) - SSC CGL</option>
+          <option value="8">Level 8 (47600-151100) - Section Officer</option>
+          <option value="9">Level 9 (53100-167800) - Assistant Director</option>
+          <option value="10">Level 10 (56100-177500) - IAS Entry</option>
+          <option value="11">Level 11 (67700-208700) - Deputy Secretary</option>
+          <option value="12">Level 12 (78800-209200) - Director</option>
+          <option value="13">Level 13 (123100-215900) - Joint Secretary</option>
+          <option value="14">Level 14 (144200-218200) - Additional Secretary</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Basic Pay (in Rs.)</label>
+        <input type="number" id="basicPay" value="44900" min="18000" max="250000">
+        <small>Enter your current basic pay within the pay level range</small>
+      </div>
+
+      <div class="form-group">
+        <label>City Category (for HRA)</label>
+        <select id="cityCategory">
+          <option value="X">X - Metro (Delhi, Mumbai, Chennai, Kolkata, etc.)</option>
+          <option value="Y">Y - Other Cities with population > 50 lakh</option>
+          <option value="Z">Z - Other Cities</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Transport Allowance Type</label>
+        <select id="taType">
+          <option value="regular">Regular (Pay Level 1-8)</option>
+          <option value="higher">Higher (Pay Level 9+)</option>
+        </select>
+      </div>
+
+      <button class="btn-calculate" onclick="calculateSalary()">Calculate Salary</button>
+    </div>
+
+    <div class="result-card">
+      <h3>Salary Breakdown</h3>
+
+      <div class="salary-row">
+        <span class="label">Basic Pay</span>
+        <span class="value" id="resBasic">₹44,900</span>
+      </div>
+      <div class="salary-row">
+        <span class="label">Dearness Allowance (53%)</span>
+        <span class="value" id="resDA">₹23,797</span>
+      </div>
+      <div class="salary-row">
+        <span class="label">House Rent Allowance</span>
+        <span class="value" id="resHRA">₹12,123</span>
+      </div>
+      <div class="salary-row">
+        <span class="label">Transport Allowance</span>
+        <span class="value" id="resTA">₹5,796</span>
+      </div>
+
+      <div class="salary-row total">
+        <span class="label">Gross Salary</span>
+        <span class="value" id="resGross">₹86,616</span>
+      </div>
+
+      <h3 style="margin-top: 24px;">Deductions</h3>
+
+      <div class="salary-row deduction">
+        <span class="label">NPS (10% of Basic+DA)</span>
+        <span class="value" id="resNPS">-₹6,870</span>
+      </div>
+      <div class="salary-row deduction">
+        <span class="label">CGHS/Medical</span>
+        <span class="value" id="resCGHS">-₹500</span>
+      </div>
+      <div class="salary-row deduction">
+        <span class="label">Income Tax (Approx.)</span>
+        <span class="value" id="resTax">-₹5,000</span>
+      </div>
+
+      <div class="salary-row net">
+        <span class="label">Net Take Home</span>
+        <span class="value" id="resNet">₹74,246</span>
+      </div>
+
+      <div class="info-box">
+        <h4>Note</h4>
+        <p>This is an approximate calculation. Actual salary may vary based on grade pay, special allowances, and individual tax situation.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <h3>Get Job Alerts for These Positions</h3>
+    <p>Subscribe to receive notifications when jobs matching your pay level are announced.</p>
+    <a href="/#pricing" class="cta-btn">Start Free Trial</a>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 IndiaGovWatch. All rights reserved. | <a href="/" style="color: var(--saffron);">Home</a> | <a href="/tools/" style="color: var(--saffron);">Tools</a></p>
+</footer>
+
+<script>
+const payLevels = {
+  1: { min: 18000, max: 56900, name: 'Level 1' },
+  2: { min: 19900, max: 63200, name: 'Level 2' },
+  3: { min: 21700, max: 69100, name: 'Level 3' },
+  4: { min: 25500, max: 81100, name: 'Level 4' },
+  5: { min: 29200, max: 92300, name: 'Level 5' },
+  6: { min: 35400, max: 112400, name: 'Level 6' },
+  7: { min: 44900, max: 142400, name: 'Level 7' },
+  8: { min: 47600, max: 151100, name: 'Level 8' },
+  9: { min: 53100, max: 167800, name: 'Level 9' },
+  10: { min: 56100, max: 177500, name: 'Level 10' },
+  11: { min: 67700, max: 208700, name: 'Level 11' },
+  12: { min: 78800, max: 209200, name: 'Level 12' },
+  13: { min: 123100, max: 215900, name: 'Level 13' },
+  14: { min: 144200, max: 218200, name: 'Level 14' }
+};
+
+const DA_RATE = 0.53; // 53% as of Jan 2026
+const HRA_RATES = { X: 0.27, Y: 0.18, Z: 0.09 }; // After 53% DA, HRA rates
+const TA_RATES = { regular: 3600, higher: 7200 }; // Base TA
+const TA_DA_RATE = 0.53; // TA also gets DA
+
+function updateBasicPay() {
+  const level = document.getElementById('payLevel').value;
+  const basic = payLevels[level].min;
+  document.getElementById('basicPay').value = basic;
+  calculateSalary();
+}
+
+function formatCurrency(amount) {
+  return '₹' + Math.round(amount).toLocaleString('en-IN');
+}
+
+function calculateSalary() {
+  const basicPay = parseFloat(document.getElementById('basicPay').value) || 0;
+  const cityCategory = document.getElementById('cityCategory').value;
+  const taType = document.getElementById('taType').value;
+  const level = parseInt(document.getElementById('payLevel').value);
+
+  // Calculate allowances
+  const da = basicPay * DA_RATE;
+  const hra = basicPay * HRA_RATES[cityCategory];
+  const taBase = level >= 9 ? TA_RATES.higher : TA_RATES.regular;
+  const ta = taBase + (taBase * TA_DA_RATE);
+
+  // Gross salary
+  const gross = basicPay + da + hra + ta;
+
+  // Deductions
+  const nps = (basicPay + da) * 0.10;
+  const cghs = basicPay > 50000 ? 500 : 250;
+
+  // Approximate tax (simplified)
+  const annualGross = gross * 12;
+  let annualTax = 0;
+  if (annualGross > 1500000) {
+    annualTax = (annualGross - 1500000) * 0.30 + 225000;
+  } else if (annualGross > 1200000) {
+    annualTax = (annualGross - 1200000) * 0.20 + 165000;
+  } else if (annualGross > 1000000) {
+    annualTax = (annualGross - 1000000) * 0.15 + 135000;
+  } else if (annualGross > 700000) {
+    annualTax = (annualGross - 700000) * 0.10 + 105000;
+  } else if (annualGross > 300000) {
+    annualTax = (annualGross - 300000) * 0.05;
+  }
+  const monthlyTax = annualTax / 12;
+
+  // Net salary
+  const totalDeductions = nps + cghs + monthlyTax;
+  const net = gross - totalDeductions;
+
+  // Update display
+  document.getElementById('resBasic').textContent = formatCurrency(basicPay);
+  document.getElementById('resDA').textContent = formatCurrency(da);
+  document.getElementById('resHRA').textContent = formatCurrency(hra);
+  document.getElementById('resTA').textContent = formatCurrency(ta);
+  document.getElementById('resGross').textContent = formatCurrency(gross);
+  document.getElementById('resNPS').textContent = '-' + formatCurrency(nps);
+  document.getElementById('resCGHS').textContent = '-' + formatCurrency(cghs);
+  document.getElementById('resTax').textContent = '-' + formatCurrency(monthlyTax);
+  document.getElementById('resNet').textContent = formatCurrency(net);
+}
+
+// Calculate on page load
+calculateSalary();
+</script>
+
+</body>
+</html>

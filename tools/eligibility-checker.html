@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Government Job Eligibility Checker 2026 | UPSC, SSC, Railway, Bank | IndiaGovWatch</title>
+<meta name="description" content="Free eligibility checker for UPSC, SSC, Railway, Bank PO exams. Check your age, education & category eligibility instantly.">
+<meta name="keywords" content="eligibility checker, UPSC eligibility, SSC eligibility, railway job eligibility, bank PO eligibility, government job age limit">
+<link rel="canonical" href="https://indiagovwatch.com/tools/eligibility-checker">
+<meta property="og:title" content="Government Job Eligibility Checker 2026">
+<meta property="og:description" content="Check your eligibility for UPSC, SSC, Railway & Bank exams instantly. Free tool by IndiaGovWatch.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF6B1A;
+    --green-india: #138808;
+    --navy: #0B1426;
+    --navy-card: #162B4D;
+    --navy-border: #1E3A5F;
+    --white: #F8F4EF;
+    --text-body: #C5D0E0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--navy); color: var(--white); font-family: 'DM Sans', sans-serif; line-height: 1.7; }
+
+  nav {
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--navy-border);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--white); }
+  .nav-logo span { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 900; }
+  .nav-logo em { color: var(--saffron); font-style: normal; }
+  .nav-links { display: flex; gap: 30px; align-items: center; }
+  .nav-links a { color: var(--text-body); text-decoration: none; }
+  .nav-cta { background: var(--saffron); color: white; padding: 10px 20px; border-radius: 6px; font-weight: 600; }
+
+  .hero {
+    max-width: 900px;
+    margin: 60px auto 40px;
+    padding: 0 20px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--saffron); }
+  .hero p { color: var(--text-body); font-size: 18px; }
+
+  .tool-container {
+    max-width: 700px;
+    margin: 0 auto 60px;
+    padding: 0 20px;
+  }
+
+  .form-card {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 12px;
+    padding: 32px;
+  }
+
+  .form-group {
+    margin-bottom: 24px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--white);
+  }
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--navy-border);
+    border-radius: 8px;
+    background: var(--navy);
+    color: var(--white);
+    font-size: 16px;
+  }
+  .form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--saffron);
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .btn-check {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--saffron), var(--green-india));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-check:hover { opacity: 0.9; }
+
+  .results {
+    margin-top: 32px;
+    display: none;
+  }
+  .results.show { display: block; }
+  .results h3 {
+    font-size: 20px;
+    margin-bottom: 16px;
+    color: var(--saffron);
+  }
+
+  .exam-result {
+    background: var(--navy);
+    border: 1px solid var(--navy-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .exam-result .exam-name { font-weight: 600; }
+  .exam-result .exam-details { font-size: 14px; color: var(--text-body); }
+  .status-eligible {
+    background: rgba(19,136,8,0.2);
+    color: var(--green-india);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .status-not-eligible {
+    background: rgba(255,59,48,0.2);
+    color: #FF3B30;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .status-check {
+    background: rgba(255,107,26,0.2);
+    color: var(--saffron);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .cta-box {
+    background: linear-gradient(135deg, var(--saffron), var(--green-india));
+    padding: 32px;
+    border-radius: 12px;
+    text-align: center;
+    margin-top: 40px;
+  }
+  .cta-box h3 { font-size: 24px; margin-bottom: 12px; }
+  .cta-box p { margin-bottom: 20px; opacity: 0.9; }
+  .cta-btn {
+    display: inline-block;
+    background: white;
+    color: var(--navy);
+    padding: 12px 28px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-body);
+    font-size: 14px;
+    border-top: 1px solid var(--navy-border);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 15px 20px; }
+    .hero h1 { font-size: 28px; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo"><span>India<em>Gov</em>Watch</span></a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/tools/">Tools</a>
+    <a href="/blog/">Blog</a>
+    <a href="/#pricing" class="nav-cta">Subscribe</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Government Job <span>Eligibility Checker</span></h1>
+  <p>Check your eligibility for UPSC, SSC, Railway, Bank & other government exams instantly</p>
+</section>
+
+<div class="tool-container">
+  <div class="form-card">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Date of Birth</label>
+        <input type="date" id="dob" required>
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select id="category">
+          <option value="general">General</option>
+          <option value="obc">OBC</option>
+          <option value="sc">SC</option>
+          <option value="st">ST</option>
+          <option value="ews">EWS</option>
+          <option value="pwd">PwD</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Highest Education</label>
+        <select id="education">
+          <option value="10th">10th Pass</option>
+          <option value="12th">12th Pass</option>
+          <option value="graduate">Graduate</option>
+          <option value="post-graduate">Post Graduate</option>
+          <option value="engineering">Engineering Degree</option>
+          <option value="medical">Medical Degree</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <select id="gender">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-check" onclick="checkEligibility()">Check Eligibility</button>
+
+    <div class="results" id="results">
+      <h3>Your Eligibility Results</h3>
+      <div id="resultsContainer"></div>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <h3>Get Exam Notifications</h3>
+    <p>Never miss application deadlines. Get alerts for exams you're eligible for.</p>
+    <a href="/#pricing" class="cta-btn">Start Free Trial</a>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 IndiaGovWatch. All rights reserved. | <a href="/" style="color: var(--saffron);">Home</a> | <a href="/tools/" style="color: var(--saffron);">Tools</a></p>
+</footer>
+
+<script>
+const exams = [
+  {
+    name: 'UPSC Civil Services (IAS/IPS)',
+    minAge: 21, maxAge: { general: 32, obc: 35, sc: 37, st: 37, ews: 32, pwd: 42 },
+    education: ['graduate', 'post-graduate', 'engineering', 'medical'],
+    attempts: { general: 6, obc: 9, sc: -1, st: -1, ews: 6, pwd: 9 }
+  },
+  {
+    name: 'SSC CGL (Group B & C)',
+    minAge: 18, maxAge: { general: 32, obc: 35, sc: 37, st: 37, ews: 32, pwd: 42 },
+    education: ['graduate', 'post-graduate', 'engineering', 'medical']
+  },
+  {
+    name: 'SSC CHSL (10+2 Level)',
+    minAge: 18, maxAge: { general: 27, obc: 30, sc: 32, st: 32, ews: 27, pwd: 37 },
+    education: ['12th', 'graduate', 'post-graduate', 'engineering', 'medical']
+  },
+  {
+    name: 'SSC MTS (Multi Tasking)',
+    minAge: 18, maxAge: { general: 25, obc: 28, sc: 30, st: 30, ews: 25, pwd: 35 },
+    education: ['10th', '12th', 'graduate', 'post-graduate', 'engineering', 'medical']
+  },
+  {
+    name: 'Railway NTPC (Graduate)',
+    minAge: 18, maxAge: { general: 33, obc: 36, sc: 38, st: 38, ews: 33, pwd: 43 },
+    education: ['graduate', 'post-graduate', 'engineering', 'medical']
+  },
+  {
+    name: 'Railway Group D',
+    minAge: 18, maxAge: { general: 33, obc: 36, sc: 38, st: 38, ews: 33, pwd: 43 },
+    education: ['10th', '12th', 'graduate', 'post-graduate', 'engineering', 'medical']
+  },
+  {
+    name: 'IBPS PO (Bank PO)',
+    minAge: 20, maxAge: { general: 30, obc: 33, sc: 35, st: 35, ews: 30, pwd: 40 },
+    education: ['graduate', 'post-graduate', 'engineering', 'medical']
+  },
+  {
+    name: 'IBPS Clerk',
+    minAge: 20, maxAge: { general: 28, obc: 31, sc: 33, st: 33, ews: 28, pwd: 38 },
+    education: ['graduate', 'post-graduate', 'engineering', 'medical']
+  },
+  {
+    name: 'SBI PO',
+    minAge: 21, maxAge: { general: 30, obc: 33, sc: 35, st: 35, ews: 30, pwd: 40 },
+    education: ['graduate', 'post-graduate', 'engineering', 'medical']
+  },
+  {
+    name: 'NDA (Army/Navy/Air Force)',
+    minAge: 16.5, maxAge: { general: 19.5, obc: 19.5, sc: 19.5, st: 19.5, ews: 19.5, pwd: 19.5 },
+    education: ['12th', 'graduate', 'post-graduate', 'engineering', 'medical'],
+    genderRestriction: 'male'
+  },
+  {
+    name: 'CDS (Combined Defence)',
+    minAge: 19, maxAge: { general: 25, obc: 25, sc: 25, st: 25, ews: 25, pwd: 25 },
+    education: ['graduate', 'post-graduate', 'engineering', 'medical']
+  },
+  {
+    name: 'Indian Engineering Services (IES)',
+    minAge: 21, maxAge: { general: 30, obc: 33, sc: 35, st: 35, ews: 30, pwd: 40 },
+    education: ['engineering']
+  },
+  {
+    name: 'State PSC (General)',
+    minAge: 21, maxAge: { general: 40, obc: 43, sc: 45, st: 45, ews: 40, pwd: 50 },
+    education: ['graduate', 'post-graduate', 'engineering', 'medical']
+  }
+];
+
+function calculateAge(dob) {
+  const today = new Date();
+  const birthDate = new Date(dob);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}
+
+function checkEligibility() {
+  const dob = document.getElementById('dob').value;
+  const category = document.getElementById('category').value;
+  const education = document.getElementById('education').value;
+  const gender = document.getElementById('gender').value;
+
+  if (!dob) {
+    alert('Please enter your date of birth');
+    return;
+  }
+
+  const age = calculateAge(dob);
+  const results = [];
+
+  exams.forEach(exam => {
+    let status = 'eligible';
+    let reason = '';
+
+    // Check age
+    const maxAge = exam.maxAge[category] || exam.maxAge.general;
+    if (age < exam.minAge) {
+      status = 'not-eligible';
+      reason = `Min age ${exam.minAge} years`;
+    } else if (age > maxAge) {
+      status = 'not-eligible';
+      reason = `Max age ${maxAge} years (you: ${age})`;
+    }
+
+    // Check education
+    if (status === 'eligible' && !exam.education.includes(education)) {
+      status = 'not-eligible';
+      reason = 'Education requirement not met';
+    }
+
+    // Check gender restriction
+    if (status === 'eligible' && exam.genderRestriction && exam.genderRestriction !== gender) {
+      status = 'not-eligible';
+      reason = `Only for ${exam.genderRestriction} candidates`;
+    }
+
+    results.push({
+      name: exam.name,
+      status,
+      reason: status === 'eligible' ? `Age: ${age}, Max: ${maxAge}` : reason
+    });
+  });
+
+  // Sort: eligible first
+  results.sort((a, b) => {
+    if (a.status === 'eligible' && b.status !== 'eligible') return -1;
+    if (a.status !== 'eligible' && b.status === 'eligible') return 1;
+    return 0;
+  });
+
+  displayResults(results);
+}
+
+function displayResults(results) {
+  const container = document.getElementById('resultsContainer');
+  const resultsDiv = document.getElementById('results');
+
+  container.innerHTML = results.map(r => `
+    <div class="exam-result">
+      <div>
+        <div class="exam-name">${r.name}</div>
+        <div class="exam-details">${r.reason}</div>
+      </div>
+      <span class="status-${r.status === 'eligible' ? 'eligible' : 'not-eligible'}">
+        ${r.status === 'eligible' ? 'Eligible' : 'Not Eligible'}
+      </span>
+    </div>
+  `).join('');
+
+  resultsDiv.classList.add('show');
+  resultsDiv.scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>

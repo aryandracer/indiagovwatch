@@ -404,6 +404,124 @@
       background: rgba(255, 255, 255, 0.3);
     }
 
+    /* Referral Section */
+    .referral-card {
+      background: linear-gradient(135deg, var(--navy-card), var(--navy-mid));
+      border: 1px solid var(--saffron);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .referral-card h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .referral-card .subtitle {
+      color: var(--text-body);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .referral-code-box {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .referral-code {
+      flex: 1;
+      background: var(--navy);
+      border: 2px dashed var(--saffron);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--saffron);
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    .copy-btn {
+      background: var(--saffron);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .copy-btn:hover {
+      opacity: 0.9;
+    }
+
+    .share-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .share-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .share-btn:hover {
+      opacity: 0.9;
+    }
+
+    .share-btn.whatsapp {
+      background: #25D366;
+      color: white;
+    }
+
+    .share-btn.twitter {
+      background: #1DA1F2;
+      color: white;
+    }
+
+    .share-btn.telegram {
+      background: #0088cc;
+      color: white;
+    }
+
+    .referral-stats {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--navy-border);
+    }
+
+    .referral-stat {
+      text-align: center;
+    }
+
+    .referral-stat .value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--saffron);
+    }
+
+    .referral-stat .label {
+      font-size: 12px;
+      color: var(--text-body);
+    }
+
     /* Responsive */
     @media (max-width: 1024px) {
       .stats-grid {
@@ -498,6 +616,44 @@
         <div class="icon">📋</div>
         <div class="value" id="statOther">0</div>
         <div class="label">Policy & Tenders</div>
+      </div>
+    </div>
+
+    <!-- Referral Card -->
+    <div class="referral-card" id="referralCard">
+      <h3>🎁 Invite Friends, Get Free Months!</h3>
+      <p class="subtitle">Invite 3 friends who subscribe and get 1 month FREE. Share your unique referral code:</p>
+
+      <div class="referral-code-box">
+        <div class="referral-code" id="referralCode">Loading...</div>
+        <button class="copy-btn" onclick="copyReferralCode()">Copy</button>
+      </div>
+
+      <div class="share-buttons">
+        <a href="#" class="share-btn whatsapp" id="shareWhatsapp" target="_blank">
+          📱 WhatsApp
+        </a>
+        <a href="#" class="share-btn twitter" id="shareTwitter" target="_blank">
+          🐦 Twitter
+        </a>
+        <a href="#" class="share-btn telegram" id="shareTelegram" target="_blank">
+          ✈️ Telegram
+        </a>
+      </div>
+
+      <div class="referral-stats">
+        <div class="referral-stat">
+          <div class="value" id="referralCount">0</div>
+          <div class="label">Friends Invited</div>
+        </div>
+        <div class="referral-stat">
+          <div class="value" id="freeMonthsEarned">0</div>
+          <div class="label">Free Months Earned</div>
+        </div>
+        <div class="referral-stat">
+          <div class="value" id="nextReward">3</div>
+          <div class="label">More for Next Reward</div>
+        </div>
       </div>
     </div>
 
@@ -718,6 +874,67 @@
         year: 'numeric'
       });
     }
+
+    // Referral System
+    async function loadReferralData() {
+      const user = JSON.parse(localStorage.getItem('igw_user') || '{}');
+
+      // Generate a referral code based on user info if not exists
+      let referralCode = user.referral_code;
+      if (!referralCode && user.email) {
+        // Create a simple code from email hash
+        referralCode = 'IGW' + btoa(user.email).substring(0, 5).toUpperCase();
+      }
+
+      if (referralCode) {
+        document.getElementById('referralCode').textContent = referralCode;
+        updateShareLinks(referralCode);
+      }
+
+      // Update stats from user data
+      const referralCount = user.referral_count || 0;
+      const freeMonths = user.free_months_earned || 0;
+      const nextReward = 3 - (referralCount % 3);
+
+      document.getElementById('referralCount').textContent = referralCount;
+      document.getElementById('freeMonthsEarned').textContent = freeMonths;
+      document.getElementById('nextReward').textContent = nextReward === 0 ? 3 : nextReward;
+    }
+
+    function updateShareLinks(code) {
+      const shareUrl = `https://indiagovwatch.com/?ref=${code}`;
+      const shareText = `🇮🇳 Get instant alerts for Government Jobs, Schemes & Tenders! Use my referral code ${code} for exclusive benefits. Join now: ${shareUrl}`;
+
+      document.getElementById('shareWhatsapp').href =
+        `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+
+      document.getElementById('shareTwitter').href =
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+
+      document.getElementById('shareTelegram').href =
+        `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
+    }
+
+    function copyReferralCode() {
+      const code = document.getElementById('referralCode').textContent;
+      const shareUrl = `https://indiagovwatch.com/?ref=${code}`;
+
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.style.background = 'var(--green-india)';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.background = 'var(--saffron)';
+        }, 2000);
+      });
+    }
+
+    // Load referral data on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(loadReferralData, 500);
+    });
   </script>
 </body>
 </html>
