@@ -1,0 +1,14 @@
+# IndiaGovWatch Robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://indiagovwatch.com/sitemap.xml
+
+# Disallow admin/API paths
+Disallow: /api/
+Disallow: /dashboard/js/
+
+# Allow search engines to crawl everything else
+Allow: /dashboard/
+Allow: /blog/
