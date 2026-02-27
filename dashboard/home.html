@@ -194,6 +194,18 @@
       border: 1px solid var(--navy-border);
       border-radius: 12px;
       padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: var(--saffron);
+      transform: translateY(-2px);
+    }
+
+    .stat-card.active {
+      border-color: var(--saffron);
+      background: rgba(255, 107, 26, 0.1);
     }
 
     .stat-card .icon {
@@ -456,22 +468,22 @@
 
     <!-- Stats Grid -->
     <div class="stats-grid">
-      <div class="stat-card">
+      <div class="stat-card active" data-category="all" onclick="filterByCategory('all')">
         <div class="icon">📰</div>
         <div class="value" id="statUpdates">0</div>
         <div class="label">New Updates</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" data-category="schemes" onclick="filterByCategory('schemes')">
         <div class="icon">🏛️</div>
         <div class="value" id="statSchemes">0</div>
         <div class="label">Schemes</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" data-category="jobs" onclick="filterByCategory('jobs')">
         <div class="icon">💼</div>
         <div class="value" id="statJobs">0</div>
         <div class="label">Jobs</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" data-category="policy,tenders,rti" onclick="filterByCategory('policy,tenders,rti')">
         <div class="icon">📋</div>
         <div class="value" id="statOther">0</div>
         <div class="label">Policy & Tenders</div>
@@ -496,6 +508,56 @@
 
   <script src="/dashboard/js/dashboard.js"></script>
   <script>
+    // Store all content globally for filtering
+    let allContent = [];
+    let currentFilter = 'all';
+
+    function filterByCategory(category) {
+      currentFilter = category;
+
+      // Update active state on cards
+      document.querySelectorAll('.stat-card').forEach(card => {
+        card.classList.remove('active');
+        if (card.dataset.category === category) {
+          card.classList.add('active');
+        }
+      });
+
+      // Filter and render content
+      renderContent(category);
+    }
+
+    function renderContent(category) {
+      const digestContent = document.getElementById('digestContent');
+      let filtered = allContent;
+
+      if (category !== 'all') {
+        const cats = category.split(',');
+        filtered = allContent.filter(item => cats.includes(item.category));
+      }
+
+      if (filtered.length > 0) {
+        digestContent.innerHTML = filtered.map(item => `
+          <div class="content-item">
+            <span class="category-tag ${item.category}">${item.categoryName}</span>
+            ${item.state ? `<span class="state-tag">${item.state}</span>` : ''}
+            <h3><a href="${item.url || '#'}" target="_blank">${escapeHtml(item.title)}</a></h3>
+            <div class="meta">
+              ${item.publishedAt ? `<span>${formatDate(item.publishedAt)}</span>` : ''}
+              ${item.url ? `<a href="${item.url}" target="_blank" style="color: var(--saffron);">Read more</a>` : ''}
+            </div>
+          </div>
+        `).join('');
+      } else {
+        digestContent.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">📭</div>
+            <p>No updates in this category today.</p>
+          </div>
+        `;
+      }
+    }
+
     // Initialize dashboard
     document.addEventListener('DOMContentLoaded', () => {
       // Check authentication
@@ -608,28 +670,9 @@
             (categories.policy?.count || 0) +
             (categories.rti?.count || 0);
 
-          // Render content
-          if (data.content && data.content.length > 0) {
-            digestContent.innerHTML = data.content.map(item => `
-              <div class="content-item">
-                <span class="category-tag ${item.category}">${item.categoryName}</span>
-                ${item.state ? `<span class="state-tag">${item.state}</span>` : ''}
-                <h3><a href="${item.url || '#'}" target="_blank">${escapeHtml(item.title)}</a></h3>
-                <div class="meta">
-                  ${item.publishedAt ? `<span>${formatDate(item.publishedAt)}</span>` : ''}
-                  ${item.url ? `<a href="${item.url}" target="_blank" style="color: var(--saffron);">Read more</a>` : ''}
-                </div>
-              </div>
-            `).join('');
-          } else {
-            digestContent.innerHTML = `
-              <div class="empty-state">
-                <div class="icon">📭</div>
-                <p>No new updates matching your preferences today.</p>
-                <p><a href="/dashboard/preferences.html" style="color: var(--saffron);">Update your preferences</a> to see more content.</p>
-              </div>
-            `;
-          }
+          // Store content globally and render
+          allContent = data.content || [];
+          renderContent(currentFilter);
         } else {
           digestContent.innerHTML = `
             <div class="empty-state">
