@@ -91,22 +91,33 @@ const OFFICIAL_PORTALS = {
 
 /**
  * Extract official URL from title/description
+ * Uses word boundary matching to avoid false positives
  */
 function getOfficialUrl(title, description) {
   const text = `${title} ${description}`.toLowerCase();
 
-  for (const [key, url] of Object.entries(OFFICIAL_PORTALS)) {
-    if (text.includes(key.toLowerCase())) {
+  // Sort by key length (longer first) to match more specific terms first
+  const sortedPortals = Object.entries(OFFICIAL_PORTALS)
+    .sort((a, b) => b[0].length - a[0].length);
+
+  for (const [key, url] of sortedPortals) {
+    // Use word boundary matching to avoid partial matches
+    const regex = new RegExp(`\\b${key.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+    if (regex.test(text)) {
       return url;
     }
   }
 
-  // Check for specific patterns
-  if (text.includes('iit ')) {
-    const match = text.match(/iit\s+(\w+)/i);
-    if (match) {
-      return `https://www.iit${match[1].toLowerCase()}.ac.in`;
-    }
+  // Check for IIT pattern (e.g., "IIT Madras", "IIT Delhi")
+  const iitMatch = text.match(/\biit\s+(\w+)/i);
+  if (iitMatch) {
+    return `https://www.iit${iitMatch[1].toLowerCase()}.ac.in`;
+  }
+
+  // Check for NIT pattern
+  const nitMatch = text.match(/\bnit\s+(\w+)/i);
+  if (nitMatch) {
+    return `https://www.nit${nitMatch[1].toLowerCase()}.ac.in`;
   }
 
   return null;
