@@ -317,6 +317,17 @@
       font-size: 11px;
     }
 
+    .content-item .official-badge {
+      background: var(--green-india);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-left: 8px;
+    }
+
     /* Loading */
     .loading {
       text-align: center;
@@ -540,11 +551,12 @@
         digestContent.innerHTML = filtered.map(item => `
           <div class="content-item">
             <span class="category-tag ${item.category}">${item.categoryName}</span>
+            ${item.officialUrl ? '<span class="official-badge">Official</span>' : ''}
             ${item.state ? `<span class="state-tag">${item.state}</span>` : ''}
             <h3><a href="${item.url || '#'}" target="_blank">${escapeHtml(item.title)}</a></h3>
             <div class="meta">
               ${item.publishedAt ? `<span>${formatDate(item.publishedAt)}</span>` : ''}
-              ${item.url ? `<a href="${item.url}" target="_blank" style="color: var(--saffron);">Read more</a>` : ''}
+              ${item.officialUrl ? `<a href="${item.officialUrl}" target="_blank" style="color: var(--green-india); font-weight: 600;">Visit Official Site →</a>` : ''}
             </div>
           </div>
         `).join('');

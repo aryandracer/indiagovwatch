@@ -45,7 +45,9 @@ module.exports = async (req, res) => {
         description: item.description,
         category: item.category,
         categoryName: categoryNames[item.category] || item.category,
-        url: item.url,
+        url: item.official_url || item.url,
+        officialUrl: item.official_url,
+        originalUrl: item.original_url,
         state: item.state,
         publishedAt: item.published_at
       }))

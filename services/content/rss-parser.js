@@ -1,5 +1,117 @@
 const Parser = require('rss-parser');
 
+// Official government website mappings
+const OFFICIAL_PORTALS = {
+  // Central Government
+  'upsc': 'https://upsc.gov.in',
+  'ssc': 'https://ssc.nic.in',
+  'ibps': 'https://ibps.in',
+  'rrb': 'https://indianrailways.gov.in/railwayboard/view_section.jsp?lang=0&id=0,7,1281',
+  'railway': 'https://indianrailways.gov.in',
+  'drdo': 'https://drdo.gov.in',
+  'isro': 'https://isro.gov.in',
+  'ongc': 'https://ongcindia.com',
+  'bhel': 'https://bhel.com',
+  'sail': 'https://sail.co.in',
+  'ntpc': 'https://ntpc.co.in',
+  'iocl': 'https://iocl.com',
+  'hal': 'https://hal-india.co.in',
+  'bel': 'https://bel-india.in',
+  'gail': 'https://gailonline.com',
+  'eil': 'https://engineersindia.com',
+  'npcil': 'https://npcil.nic.in',
+  'bpcl': 'https://bharatpetroleum.in',
+  'hpcl': 'https://hindustanpetroleum.com',
+
+  // Banks
+  'sbi': 'https://sbi.co.in/careers',
+  'rbi': 'https://rbi.org.in',
+  'pnb': 'https://pnbindia.in',
+  'bob': 'https://bankofbaroda.in',
+  'canara': 'https://canarabank.com',
+
+  // Universities & Education
+  'ugc': 'https://ugc.ac.in',
+  'iit': 'https://iitsystem.ac.in',
+  'nit': 'https://nitcouncil.org.in',
+  'aiims': 'https://aiims.edu',
+  'jnu': 'https://jnu.ac.in',
+  'du': 'https://du.ac.in',
+  'bhu': 'https://bhu.ac.in',
+  'amu': 'https://amu.ac.in',
+  'anna university': 'https://annauniv.edu',
+  'iim': 'https://iim.ac.in',
+
+  // Defence
+  'indian army': 'https://joinindianarmy.nic.in',
+  'indian navy': 'https://joinindiannavy.gov.in',
+  'indian air force': 'https://indianairforce.nic.in',
+  'coast guard': 'https://joinindiancoastguard.cdac.in',
+
+  // States
+  'dsssb': 'https://dsssb.delhi.gov.in',
+  'uppsc': 'https://uppsc.up.nic.in',
+  'bpsc': 'https://bpsc.bih.nic.in',
+  'mpsc': 'https://mpsc.gov.in',
+  'tnpsc': 'https://tnpsc.gov.in',
+  'kpsc': 'https://kpsc.kar.nic.in',
+  'appsc': 'https://psc.ap.gov.in',
+  'tspsc': 'https://tspsc.gov.in',
+  'rpsc': 'https://rpsc.rajasthan.gov.in',
+  'gpsc': 'https://gpsc.gujarat.gov.in',
+  'wbpsc': 'https://wbpsc.gov.in',
+  'mppsc': 'https://mppsc.nic.in',
+  'cgpsc': 'https://psc.cg.gov.in',
+  'ukpsc': 'https://ukpsc.gov.in',
+  'hppsc': 'https://hppsc.hp.gov.in',
+  'jpsc': 'https://jpsc.gov.in',
+  'opsc': 'https://opsc.gov.in',
+  'ppsc': 'https://ppsc.gov.in',
+  'hpsc': 'https://hpsc.gov.in',
+
+  // Research
+  'csir': 'https://csir.res.in',
+  'icar': 'https://icar.org.in',
+  'icmr': 'https://icmr.nic.in',
+  'dae': 'https://dae.gov.in',
+  'dst': 'https://dst.gov.in',
+
+  // Others
+  'lic': 'https://licindia.in',
+  'fci': 'https://fci.gov.in',
+  'nhai': 'https://nhai.gov.in',
+  'aai': 'https://aai.aero',
+  'bsnl': 'https://bsnl.co.in',
+  'mtnl': 'https://mtnl.in',
+  'ecil': 'https://ecil.co.in',
+  'becil': 'https://becil.com',
+  'nielit': 'https://nielit.gov.in',
+  'nift': 'https://nift.ac.in',
+};
+
+/**
+ * Extract official URL from title/description
+ */
+function getOfficialUrl(title, description) {
+  const text = `${title} ${description}`.toLowerCase();
+
+  for (const [key, url] of Object.entries(OFFICIAL_PORTALS)) {
+    if (text.includes(key.toLowerCase())) {
+      return url;
+    }
+  }
+
+  // Check for specific patterns
+  if (text.includes('iit ')) {
+    const match = text.match(/iit\s+(\w+)/i);
+    if (match) {
+      return `https://www.iit${match[1].toLowerCase()}.ac.in`;
+    }
+  }
+
+  return null;
+}
+
 // Initialize RSS parser with custom fields
 const parser = new Parser({
   timeout: 30000, // 30 second timeout
@@ -78,12 +190,17 @@ function normalizeItem(item, sourceInfo, feed) {
   // Clean title
   const title = cleanText(item.title || 'Untitled');
 
+  // Get official portal URL
+  const officialUrl = getOfficialUrl(title, description);
+
   return {
     source_id: sourceInfo.id || null,
     category: sourceInfo.category || 'policy',
     title: title,
     description: description,
-    url: item.link || item.guid || null,
+    url: officialUrl || item.link || item.guid || null, // Prefer official URL
+    original_url: item.link || item.guid || null, // Keep aggregator URL as backup
+    official_url: officialUrl,
     published_at: publishedAt,
     state: sourceInfo.state || null,
     tags: tags.length > 0 ? tags : null,
