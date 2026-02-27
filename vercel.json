@@ -10,10 +10,13 @@
       "schedule": "0 2 * * *"
     }
   ],
-  "rewrites": [
-    {
-      "source": "/dashboard",
-      "destination": "/dashboard/index.html"
-    }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/dashboard/(.*)", "dest": "/dashboard/$1" },
+    { "src": "/dashboard", "dest": "/dashboard/index.html" },
+    { "src": "/blog/(.*)", "dest": "/blog/$1" },
+    { "src": "/blog", "dest": "/blog/index.html" },
+    { "src": "/(.*\\.(html|css|js|svg|png|jpg|ico|xml|txt))", "dest": "/$1" },
+    { "src": "/", "dest": "/index.html" }
   ]
 }
