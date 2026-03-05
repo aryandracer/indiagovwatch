@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - IndiaGovWatch</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --saffron: #FF6B1A;
+      --green: #138808;
+      --navy: #0B1426;
+      --navy-card: #162B4D;
+      --navy-border: #1E3A5F;
+      --white: #F8F4EF;
+      --text-body: #C5D0E0;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      padding: 40px;
+    }
+
+    .login-container {
+      max-width: 400px;
+      margin: 100px auto;
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .login-container h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .login-container p {
+      color: var(--text-body);
+      margin-bottom: 24px;
+    }
+
+    .login-container input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--navy-border);
+      border-radius: 8px;
+      background: var(--navy);
+      color: var(--white);
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 14px;
+      background: var(--saffron);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .login-container button:hover {
+      opacity: 0.9;
+    }
+
+    .error {
+      color: #EF4444;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* Dashboard */
+    .dashboard {
+      display: none;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .dashboard.show {
+      display: block;
+    }
+
+    .login-container.hide {
+      display: none;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+    }
+
+    .header h1 span {
+      color: var(--saffron);
+    }
+
+    .logout-btn {
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      color: var(--text-body);
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .stat-card .label {
+      color: var(--text-body);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .stat-card .value {
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    .stat-card .change {
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .stat-card .change.up {
+      color: var(--green);
+    }
+
+    .stat-card .change.down {
+      color: #EF4444;
+    }
+
+    .section {
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th, .table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--navy-border);
+    }
+
+    .table th {
+      color: var(--text-body);
+      font-weight: 500;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .table td {
+      font-size: 14px;
+    }
+
+    .table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge.trial {
+      background: rgba(255, 107, 26, 0.2);
+      color: var(--saffron);
+    }
+
+    .badge.active {
+      background: rgba(19, 136, 8, 0.2);
+      color: var(--green);
+    }
+
+    .badge.expired {
+      background: rgba(239, 68, 68, 0.2);
+      color: #EF4444;
+    }
+
+    .badge.bharat {
+      background: rgba(255, 107, 26, 0.2);
+      color: var(--saffron);
+    }
+
+    .badge.pro {
+      background: rgba(19, 136, 8, 0.2);
+      color: var(--green);
+    }
+
+    .badge.global {
+      background: rgba(0, 102, 204, 0.2);
+      color: #0066CC;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .chart-placeholder {
+      height: 200px;
+      background: var(--navy);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-body);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-body);
+    }
+
+    @media (max-width: 900px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Login Form -->
+<div class="login-container" id="loginForm">
+  <h1>Admin Access</h1>
+  <p>Enter admin password to continue</p>
+  <p class="error" id="loginError">Invalid password</p>
+  <input type="password" id="password" placeholder="Enter password" onkeypress="if(event.key==='Enter')login()">
+  <button onclick="login()">Access Dashboard</button>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+  <div class="header">
+    <h1>India<span>Gov</span>Watch Admin</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="label">Total Users</div>
+      <div class="value" id="totalUsers">-</div>
+      <div class="change up" id="usersChange">Loading...</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Active Subscriptions</div>
+      <div class="value" id="activeSubscriptions">-</div>
+      <div class="change" id="subsChange">Loading...</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Trial Users</div>
+      <div class="value" id="trialUsers">-</div>
+      <div class="change" id="trialChange">Loading...</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Total Revenue</div>
+      <div class="value" id="totalRevenue">-</div>
+      <div class="change up" id="revenueChange">Loading...</div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="section">
+      <h2>📊 Subscriptions by Plan</h2>
+      <table class="table" id="planBreakdown">
+        <tr><td colspan="2" class="loading">Loading...</td></tr>
+      </table>
+    </div>
+    <div class="section">
+      <h2>📈 Subscriptions by Status</h2>
+      <table class="table" id="statusBreakdown">
+        <tr><td colspan="2" class="loading">Loading...</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>👥 Recent Signups</h2>
+    <table class="table" id="recentUsers">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Plan</th>
+          <th>Status</th>
+          <th>Signed Up</th>
+        </tr>
+      </thead>
+      <tbody id="recentUsersBody">
+        <tr><td colspan="5" class="loading">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>💰 Recent Payments</h2>
+    <table class="table" id="recentPayments">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="recentPaymentsBody">
+        <tr><td colspan="4" class="loading">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  // Simple password protection (set your password here)
+  const ADMIN_PASSWORD = 'igw2026admin';
+
+  function login() {
+    const password = document.getElementById('password').value;
+    if (password === ADMIN_PASSWORD) {
+      localStorage.setItem('igw_admin', 'true');
+      showDashboard();
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem('igw_admin');
+    location.reload();
+  }
+
+  function showDashboard() {
+    document.getElementById('loginForm').classList.add('hide');
+    document.getElementById('dashboard').classList.add('show');
+    loadDashboardData();
+  }
+
+  // Check if already logged in
+  if (localStorage.getItem('igw_admin') === 'true') {
+    showDashboard();
+  }
+
+  async function loadDashboardData() {
+    try {
+      const response = await fetch('/api/admin/stats', {
+        headers: {
+          'X-Admin-Key': ADMIN_PASSWORD
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to load stats');
+      }
+
+      const data = await response.json();
+
+      // Update stats
+      document.getElementById('totalUsers').textContent = data.totalUsers || 0;
+      document.getElementById('activeSubscriptions').textContent = data.activeSubscriptions || 0;
+      document.getElementById('trialUsers').textContent = data.trialUsers || 0;
+      document.getElementById('totalRevenue').textContent = '₹' + (data.totalRevenue || 0).toLocaleString();
+
+      document.getElementById('usersChange').textContent = `+${data.newUsersThisWeek || 0} this week`;
+      document.getElementById('subsChange').textContent = `${data.conversionRate || 0}% conversion`;
+      document.getElementById('trialChange').textContent = `${data.trialConversion || 0}% convert to paid`;
+      document.getElementById('revenueChange').textContent = `+₹${(data.revenueThisMonth || 0).toLocaleString()} this month`;
+
+      // Plan breakdown
+      const planTable = document.getElementById('planBreakdown');
+      if (data.planBreakdown && data.planBreakdown.length) {
+        planTable.innerHTML = data.planBreakdown.map(p => `
+          <tr>
+            <td><span class="badge ${p.plan}">${p.plan.charAt(0).toUpperCase() + p.plan.slice(1)}</span></td>
+            <td>${p.count} subscribers</td>
+          </tr>
+        `).join('');
+      } else {
+        planTable.innerHTML = '<tr><td colspan="2">No subscriptions yet</td></tr>';
+      }
+
+      // Status breakdown
+      const statusTable = document.getElementById('statusBreakdown');
+      if (data.statusBreakdown && data.statusBreakdown.length) {
+        statusTable.innerHTML = data.statusBreakdown.map(s => `
+          <tr>
+            <td><span class="badge ${s.status}">${s.status.charAt(0).toUpperCase() + s.status.slice(1)}</span></td>
+            <td>${s.count} users</td>
+          </tr>
+        `).join('');
+      } else {
+        statusTable.innerHTML = '<tr><td colspan="2">No subscriptions yet</td></tr>';
+      }
+
+      // Recent users
+      const usersBody = document.getElementById('recentUsersBody');
+      if (data.recentUsers && data.recentUsers.length) {
+        usersBody.innerHTML = data.recentUsers.map(u => `
+          <tr>
+            <td>${u.name || '-'}</td>
+            <td>${u.email}</td>
+            <td><span class="badge ${u.plan || 'trial'}">${u.plan || 'No plan'}</span></td>
+            <td><span class="badge ${u.status || 'trial'}">${u.status || 'Trial'}</span></td>
+            <td>${formatDate(u.created_at)}</td>
+          </tr>
+        `).join('');
+      } else {
+        usersBody.innerHTML = '<tr><td colspan="5">No users yet</td></tr>';
+      }
+
+      // Recent payments
+      const paymentsBody = document.getElementById('recentPaymentsBody');
+      if (data.recentPayments && data.recentPayments.length) {
+        paymentsBody.innerHTML = data.recentPayments.map(p => `
+          <tr>
+            <td>${p.email || 'Unknown'}</td>
+            <td>₹${p.amount}</td>
+            <td><span class="badge ${p.status === 'completed' ? 'active' : 'trial'}">${p.status}</span></td>
+            <td>${formatDate(p.created_at)}</td>
+          </tr>
+        `).join('');
+      } else {
+        paymentsBody.innerHTML = '<tr><td colspan="4">No payments yet</td></tr>';
+      }
+
+    } catch (error) {
+      console.error('Error loading dashboard:', error);
+    }
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '-';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  }
+</script>
+
+</body>
+</html>
